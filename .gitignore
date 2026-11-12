@@ -1,0 +1,32 @@
+# Python environment
+.venv/
+env/
+__pycache__/
+*.py[cod]
+*$py.class
+*.egg-info/
+dist/
+build/
+
+# Media & Large artifacts
+inputs/
+outputs/
+*.mp4
+*.mov
+*.avi
+*.mkv
+*.wav
+*.mp3
+*.onnx
+*.weights
+*.tar.gz
+*.zip
+
+# Secrets & Configs
+.env
+.env.local
+
+# OS files
+.DS_Store
+Thumbs.db
+desktop.ini
