@@ -17,8 +17,7 @@
 
 ---
 
-## Milestone 2: Backlog V2 (Hoãn lại - Không tính vào Core MVP)
-
-- [ ] **Agent Skill Packaging:** Đóng gói thành Custom Skill trong `.agents/skills/rea-video`.
+## Milestone 2: Expansion & Ecosystem Integration
+- [x] **Agent Skill Packaging:** Đóng gói thành Custom Skill `vrea-video-forensics` trong `.agents/skills/vrea-video-forensics/SKILL.md` và `~/.gemini/config/skills/vrea-video-forensics/SKILL.md`.
 - [ ] **Auto-Remake Adapter:** Tích hợp script gọi API Kling / Wan / Runway để render lại video từ file `VIDEO.md`.
 - [ ] **GPU Acceleration:** Hỗ trợ tùy chọn `onnxruntime-gpu` khi người dùng yêu cầu xử lý video dung lượng lớn trên GPU.
