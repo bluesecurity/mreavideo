@@ -28,7 +28,7 @@ def load_env_file():
                     k, v = line.split("=", 1)
                     os.environ.setdefault(k.strip(), v.strip())
 
-def run_decompose(video_path: Path, output_dir: Path | None = None, vlm: bool = False, verbose: bool = False):
+def run_decompose(video_path: Path, output_dir: Path | None = None, vlm: bool = False, verbose: bool = False, lang: str = "en"):
     ensure_venv()
     load_env_file()
 
@@ -42,11 +42,14 @@ def run_decompose(video_path: Path, output_dir: Path | None = None, vlm: bool = 
 
     output_dir.parent.mkdir(parents=True, exist_ok=True)
 
-    cmd = [str(VENV_REA), "decompose", str(video_path), "-o", str(output_dir)]
-    if vlm:
-        cmd.append("--vlm")
+    cmd = [str(VENV_REA)]
     if verbose:
         cmd.append("-v")
+    cmd.extend(["decompose", str(video_path), "-o", str(output_dir)])
+    if lang:
+        cmd.extend(["--lang", lang])
+    if vlm:
+        cmd.append("--vlm")
 
     print(f"\n=======================================================")
     print(f"🎬 Processing: {video_path.name}")
@@ -74,6 +77,7 @@ def main():
     parser.add_argument("-o", "--output", help="Custom output directory")
     parser.add_argument("--vlm", action="store_true", help="Enable Multimodal Vision LLM enhancement")
     parser.add_argument("--all", action="store_true", help="Process all videos located in inputs/ directory")
+    parser.add_argument("--lang", choices=["zh", "en"], default="en", help="Report and description language (default: en)")
     parser.add_argument("-v", "--verbose", action="store_true", help="Verbose logs")
 
     args = parser.parse_args()
@@ -85,11 +89,11 @@ def main():
             print(f"No video files found in {inputs_dir}")
             return
         for vid in video_files:
-            run_decompose(vid, vlm=args.vlm, verbose=args.verbose)
+            run_decompose(vid, vlm=args.vlm, verbose=args.verbose, lang=args.lang)
     elif args.video:
         vid_path = Path(args.video).resolve()
         out_path = Path(args.output).resolve() if args.output else None
-        sys.exit(run_decompose(vid_path, out_path, vlm=args.vlm, verbose=args.verbose))
+        sys.exit(run_decompose(vid_path, out_path, vlm=args.vlm, verbose=args.verbose, lang=args.lang))
     else:
         parser.print_help()
 
