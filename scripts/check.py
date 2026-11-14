@@ -66,7 +66,8 @@ def main():
     if not run_step("Core Pytest Suite (54 test cases)", [str(pytest_bin), *test_files, "-q"]):
         sys.exit(1)
 
-    # 5. Check sample test outputs exist and are valid
+    # 5. Check sample test outputs exist and are valid (auto-generate if missing on clean workspace)
+    sample_in = ROOT / "inputs" / "sample_test.mp4"
     sample_out = ROOT / "outputs" / "sample_test"
     required_artifacts = [
         sample_out / "VIDEO.md",
@@ -77,6 +78,11 @@ def main():
         sample_out / "stems" / "effects.wav"
     ]
     missing = [str(a.relative_to(ROOT)) for a in required_artifacts if not a.exists()]
+    if missing and sample_in.exists():
+        log("Sample outputs missing; running end-to-end decompose on inputs/sample_test.mp4...")
+        if not run_step("Auto-generate sample_test outputs", [sys.executable, "run.py", str(sample_in)]):
+            sys.exit(1)
+        missing = [str(a.relative_to(ROOT)) for a in required_artifacts if not a.exists()]
     if missing:
         print(f"[FAIL] Missing required test artifacts: {missing}", file=sys.stderr)
         sys.exit(1)

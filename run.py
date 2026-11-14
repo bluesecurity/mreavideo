@@ -19,14 +19,28 @@ def ensure_venv():
         sys.exit(1)
 
 def load_env_file():
-    env_file = ROOT_DIR / ".env"
-    if env_file.exists():
-        with open(env_file, "r", encoding="utf-8") as f:
-            for line in f:
-                line = line.strip()
-                if line and not line.startswith("#") and "=" in line:
-                    k, v = line.split("=", 1)
-                    os.environ.setdefault(k.strip(), v.strip())
+    for name in (".env.local", ".env"):
+        env_file = ROOT_DIR / name
+        if env_file.exists():
+            with open(env_file, "r", encoding="utf-8-sig") as f:
+                for line in f:
+                    line = line.strip().lstrip("\ufeff")
+                    if line and not line.startswith("#") and "=" in line:
+                        k, v = line.split("=", 1)
+                        val = v.strip().strip('"').strip("'")
+                        if val:
+                            os.environ.setdefault(k.strip(), val)
+
+    # Auto-bridge shorthand keys (GEMINI_API_KEY / OPENAI_API_KEY) to REA_VLM_* expected by engine/rea_video/vlm.py
+    if not os.environ.get("REA_VLM_API_KEY"):
+        if os.environ.get("GEMINI_API_KEY"):
+            os.environ["REA_VLM_API_KEY"] = os.environ["GEMINI_API_KEY"]
+            os.environ.setdefault("REA_VLM_BASE_URL", "https://generativelanguage.googleapis.com/v1beta/openai")
+            os.environ.setdefault("REA_VLM_MODEL", "gemini-2.5-flash,gemini-2.5-pro")
+        elif os.environ.get("OPENAI_API_KEY"):
+            os.environ["REA_VLM_API_KEY"] = os.environ["OPENAI_API_KEY"]
+            os.environ.setdefault("REA_VLM_BASE_URL", "https://api.openai.com/v1")
+            os.environ.setdefault("REA_VLM_MODEL", "gpt-4o-mini,gpt-4o")
 
 def run_decompose(video_path: Path, output_dir: Path | None = None, vlm: bool = False, verbose: bool = False, lang: str = "en"):
     ensure_venv()
@@ -73,7 +87,7 @@ def run_decompose(video_path: Path, output_dir: Path | None = None, vlm: bool = 
 
 def main():
     parser = argparse.ArgumentParser(description="mreavideo: Reverse-Engineering Video Engine")
-    parser.add_argument("video", nargs="?", help="Path to input video (.mp4, .mov)")
+    parser.add_argument("video", nargs="?", help="Path to input video (.mp4, .mov, .mkv)")
     parser.add_argument("-o", "--output", help="Custom output directory")
     parser.add_argument("--vlm", action="store_true", help="Enable Multimodal Vision LLM enhancement")
     parser.add_argument("--all", action="store_true", help="Process all videos located in inputs/ directory")
@@ -84,12 +98,20 @@ def main():
 
     if args.all:
         inputs_dir = ROOT_DIR / "inputs"
-        video_files = list(inputs_dir.glob("*.mp4")) + list(inputs_dir.glob("*.mov"))
+        valid_exts = {".mp4", ".mov", ".mkv"}
+        video_files = sorted(
+            p for p in inputs_dir.iterdir()
+            if p.is_file() and p.suffix.lower() in valid_exts
+        ) if inputs_dir.exists() else []
         if not video_files:
             print(f"No video files found in {inputs_dir}")
-            return
+            sys.exit(0)
+        failures = 0
         for vid in video_files:
-            run_decompose(vid, vlm=args.vlm, verbose=args.verbose, lang=args.lang)
+            rc = run_decompose(vid, vlm=args.vlm, verbose=args.verbose, lang=args.lang)
+            if rc != 0:
+                failures += 1
+        sys.exit(1 if failures else 0)
     elif args.video:
         vid_path = Path(args.video).resolve()
         out_path = Path(args.output).resolve() if args.output else None

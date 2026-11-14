@@ -28,7 +28,8 @@ mreavideo/
 ├── inputs/                     # Nơi chứa video tham chiếu đầu vào (.mp4, .mov)
 ├── outputs/                    # Thư mục chứa artifacts đầu ra (.html, .md, .wav, .jpg)
 ├── scripts/
-│   └── check.py                # Script kiểm định cơ học 1 lệnh (Mechanical Validation)
+│   ├── check.py                # Script kiểm định cơ học 1 lệnh (Mechanical Validation)
+│   └── push_dual.py            # Script đẩy đồng bộ Gitea LAN + GitHub có che mờ token
 ├── CONTEXT.md                  # Bản đồ kiến trúc & Rollback Anchor
 ├── SPEC.md                     # Đặc tả kỹ thuật và ranh giới hệ thống
 ├── GOAL.md                     # Mục tiêu tổng thể & Anti-Zeno Lock
@@ -42,4 +43,4 @@ mreavideo/
 
 - **Non-Goal 1:** Không tự động re-render video mới bằng API trả phí (Kling AI, Runway Gen-3, Luma, Wan) trong phạm vi Core MVP; chỉ tập trung vào phân tích trinh sát và xuất bản thiết kế Remake Spec.
 - **Non-Goal 2:** Không dựng web server hoặc database nặng; toàn bộ dữ liệu vận hành theo mô hình Local-First dựa trên file hệ thống (`inputs/` và `outputs/`).
-- **Non-Goal 3:** Không thay đổi các file cấu hình toàn cục bên ngoài workspace `f:\Mcode\mreavideo`.
+- **Non-Goal 3:** Không thay đổi bất kỳ Global Skills hoặc file cấu hình toàn cục nào bên ngoài workspace `f:\Mcode\mreavideo` (ngoại trừ liên kết đồng bộ duy nhất cho skill chuyên biệt `~/.gemini/config/skills/vrea-video-forensics/SKILL.md` mà dự án này phục vụ).

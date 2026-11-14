@@ -35,7 +35,12 @@
      # Sau:
      is_sub = ((changing >= 3 or (changing >= 2 and duration < 15)) and 0.7 <= med <= 7.0 and h < 0.08 and not tilted
      ```
-   - **Kết quả nghiệm thu:** 100% Unit Tests (54/54 ca kiểm thử) vượt qua thành công (`test_packaging.py`, `test_security.py`, `test_videomd.py`, `test_shots.py`, `test_pipeline.py`).
+   - **Kết quả nghiệm thu:** 100% Unit Tests (54/54 ca kiểm thử cốt lõi và 262/262 toàn bộ suite) vượt qua thành công (`test_packaging.py`, `test_security.py`, `test_videomd.py`, `test_shots.py`, `test_pipeline.py`).
+
+2. **Khóa Sổ Anti-Regression & Đồng Bộ Env/CLI/Harness (Frozen Audit Rubric V1):**
+   - **Nạp cấu hình `.env.local` & `.env` kèm Auto-Bridge VLM:** Cập nhật `run.py:load_env_file()` đọc ưu tiên `.env.local` rồi đến `.env`, tự động strip BOM và dấu ngoặc kép/đơn (`"`/`'`), đồng thời tự động ánh xạ `GEMINI_API_KEY` / `OPENAI_API_KEY` sang bộ 3 biến `REA_VLM_{API_KEY,BASE_URL,MODEL}` mà `engine/rea_video/vlm.py` yêu cầu.
+   - **Đồng bộ Input Contract & Batch Exit Code:** Mở rộng `run.py --all` quét cả `.mp4`, `.mov`, `.mkv` (khớp 100% với `vrea-video-forensics/SKILL.md`) và trả về mã lỗi `1` nếu có bất kỳ video nào trong lô thất bại.
+   - **Self-Healing `scripts/check.py`:** Tự động chạy phân tích `inputs/sample_test.mp4` nếu thư mục `outputs/sample_test/` chưa tồn tại (do `outputs/` nằm trong `.gitignore`).
 
 ---
 

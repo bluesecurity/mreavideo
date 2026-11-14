@@ -4,8 +4,8 @@
 - **Tên dự án:** `mreavideo`
 - **Mục đích:** Reverse-Engineer Any Video (Dịch ngược video clip, bóc tách cấu trúc từng phân cảnh, nhận diện AI vs Thực tế, bóc tách âm thanh, nhận dạng phụ đề và lập kế hoạch tái sản xuất Remake Plan).
 - **Thư mục làm việc:** `f:\Mcode\mreavideo`
-- **Rollback Anchor:** `23b8d32e1164b925a4963a87823fadc7946392ec`
-- **Agent Skill:** `vrea-video-forensics` (Project Scope: `.agents/skills/vrea-video-forensics/` & Global Scope: `~/.gemini/config/skills/vrea-video-forensics/`)
+- **Rollback Anchor:** `991532bd7a53fe0d000db59137892107ae3c1778` (Commit gốc khởi tạo: `e5e17f3`)
+- **Agent Skill:** `vrea-video-forensics` (Project Scope: `.agents/skills/vrea-video-forensics/` & Global Link duy nhất: `~/.gemini/config/skills/vrea-video-forensics/`)
 
 ---
 
