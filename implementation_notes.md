@@ -42,6 +42,10 @@
    - **Đồng bộ Input Contract & Batch Exit Code:** Mở rộng `run.py --all` quét cả `.mp4`, `.mov`, `.mkv` (khớp 100% với `vrea-video-forensics/SKILL.md`) và trả về mã lỗi `1` nếu có bất kỳ video nào trong lô thất bại.
    - **Self-Healing `scripts/check.py`:** Tự động chạy phân tích `inputs/sample_test.mp4` nếu thư mục `outputs/sample_test/` chưa tồn tại (do `outputs/` nằm trong `.gitignore`).
 
+3. **Tích hợp Kho Mẫu ReelCrew (61 Styles / 133 Videos) & Air-Gapped Handoff Blueprint Compiler:**
+   - **ReelCrew Harvester (`scripts/download_reelcrew_samples.py`):** Tải toàn bộ 133 file `.mp4` từ 61 styles trên `https://reelcrew.io/video-mau` về `F:\mworkk\videosample\reels\` kèm `catalog.json` và `CATALOG.md` (0 lỗi HTTP 404).
+   - **Air-Gapped Handoff Compiler (`scripts/export_handoff.py`):** Tinh luyện kết quả từ `breakdown.json` (83k+ tokens) thành gói bàn giao gọn nhẹ `outputs/<stem>/HANDOFF_BLUEPRINT.md` và `handoff_manifest.json`. Tự động đối chiếu SHA256/filename với `F:\mworkk\videosample\reels\catalog.json`, tính toán tỷ lệ `SNR (dB)` cho từng nhóm SFX (`sfx/sfx_XX.wav`), quy đổi tọa độ sang `escbase_template` (`390x693`) và `backvideo` (Remotion `@30fps`), và gắn kèm 5 rào chắn chống va chạm (Anti-Collision Guards).
+
 ---
 
 ## 3. Đánh giá Đánh đổi (Considered Trade-offs)

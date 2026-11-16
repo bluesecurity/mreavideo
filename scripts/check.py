@@ -73,6 +73,8 @@ def main():
         sample_out / "VIDEO.md",
         sample_out / "report.html",
         sample_out / "breakdown.json",
+        sample_out / "HANDOFF_BLUEPRINT.md",
+        sample_out / "handoff_manifest.json",
         sample_out / "stems" / "vocals.wav",
         sample_out / "stems" / "music.wav",
         sample_out / "stems" / "effects.wav"
@@ -87,6 +89,10 @@ def main():
         print(f"[FAIL] Missing required test artifacts: {missing}", file=sys.stderr)
         sys.exit(1)
     print("[PASS] Test sample outputs verified.\n")
+
+    # 6. Check Handoff Blueprint Compiler CLI (--all)
+    if not run_step("Handoff Blueprint Compiler (export_handoff.py --all)", [sys.executable, "scripts/export_handoff.py", "--all"]):
+        sys.exit(1)
 
     print("=" * 60)
     print("🎉 ALL MECHANICAL CHECKS PASSED WITH EXIT CODE 0")

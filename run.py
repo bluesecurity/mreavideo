@@ -81,6 +81,12 @@ def run_decompose(video_path: Path, output_dir: Path | None = None, vlm: bool = 
             print(f"📊 Visual Report: file:///{report_html.as_posix()}")
         if video_md.exists():
             print(f"📝 Remake Spec:   file:///{video_md.as_posix()}")
+        try:
+            from scripts.export_handoff import compile_handoff
+            bp_path, _ = compile_handoff(output_dir)
+            print(f"📦 Handoff Pack:  file:///{bp_path.as_posix()}")
+        except Exception as exc:
+            print(f"[WARN] Could not auto-generate Handoff Blueprint: {exc}")
     else:
         print(f"\n❌ Pipeline failed with exit code: {result.returncode}")
     return result.returncode
