@@ -42,8 +42,14 @@ def main():
             sys.exit(1)
     print("[PASS] Python environment & dependencies intact.\n")
 
-    # 2. Check FFmpeg in PATH
+    # 2. Check FFmpeg in PATH (auto-include WinGet Links on Windows if needed)
     ffmpeg_path = shutil.which("ffmpeg")
+    if not ffmpeg_path:
+        winget_links = Path.home() / "AppData" / "Local" / "Microsoft" / "WinGet" / "Links"
+        if winget_links.exists():
+            import os
+            os.environ["PATH"] = str(winget_links) + os.pathsep + os.environ.get("PATH", "")
+            ffmpeg_path = shutil.which("ffmpeg")
     if not ffmpeg_path:
         print("[FAIL] ffmpeg not found in PATH!", file=sys.stderr)
         sys.exit(1)
@@ -90,9 +96,18 @@ def main():
         sys.exit(1)
     print("[PASS] Test sample outputs verified.\n")
 
-    # 6. Check Handoff Blueprint Compiler CLI (--all)
+    # 6. Check Handoff Blueprint Compiler CLI (--all) & Portable Setup & Visual Cockpit
+    if not run_step("Portable Setup & Submodule Patch Guard", [sys.executable, "scripts/portable_setup.py", "--no-global-sync"]):
+        sys.exit(1)
     if not run_step("Handoff Blueprint Compiler (export_handoff.py --all)", [sys.executable, "scripts/export_handoff.py", "--all"]):
         sys.exit(1)
+    if not run_step("Visual Cockpit Builder (build_cockpit.py)", [sys.executable, "scripts/build_cockpit.py"]):
+        sys.exit(1)
+    cockpit_html = ROOT / "VISUAL_COCKPIT.html"
+    if not cockpit_html.exists() or cockpit_html.stat().st_size < 10000:
+        print("[FAIL] VISUAL_COCKPIT.html missing or incomplete!", file=sys.stderr)
+        sys.exit(1)
+    print(f"[PASS] VISUAL_COCKPIT.html verified ({cockpit_html.stat().st_size} bytes).\n")
 
     print("=" * 60)
     print("🎉 ALL MECHANICAL CHECKS PASSED WITH EXIT CODE 0")

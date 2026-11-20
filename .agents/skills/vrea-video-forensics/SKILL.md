@@ -18,7 +18,9 @@ Skill này cung cấp quy trình tự hành phân tích, dịch ngược video t
 ## 2. Yêu cầu Đầu vào & Kho Mẫu Tham Chiếu (Input Contract & Reference Vault)
 - **Định dạng chấp nhận:** File video cục bộ hợp lệ (`.mp4`, `.mov`, `.mkv`).
 - **Thư mục tiêu chuẩn:** Đặt video vào `F:\Mcode\mreavideo\inputs/` hoặc truyền đường dẫn tuyệt đối.
-- **Kho mẫu ReelCrew (61 Styles / 133 Videos):** Đã được đồng bộ đầy đủ tại `F:\mworkk\videosample\reels\` kèm chỉ mục [`CATALOG.md`](file:///F:/mworkk/videosample/reels/CATALOG.md) và [`catalog.json`](file:///F:/mworkk/videosample/reels/catalog.json) (cập nhật qua `scripts/download_reelcrew_samples.py`).
+- **Kho mẫu ReelCrew (61 Styles / 136 Videos):** Đã được đồng bộ đầy đủ tại `F:\mworkk\videosample\reels\` kèm chỉ mục [`CATALOG.md`](file:///F:/mworkk/videosample/reels/CATALOG.md) và [`catalog.json`](file:///F:/mworkk/videosample/reels/catalog.json) (cập nhật qua `scripts/download_reelcrew_samples.py`).
+- **Tổng đài trực quan (Visual Cockpit & Mindmap):** Mở trực tiếp [`F:\Mcode\mreavideo\VISUAL_COCKPIT.html`](file:///F:/Mcode/mreavideo/VISUAL_COCKPIT.html) (được sinh tự động qua `scripts/build_cockpit.py`) để duyệt 61 Templates, phát thử 136 video mẫu, nghe thử Audio Stems/SFX đã mổ và copy lệnh bàn giao sang 3 xưởng (`escbase_template`, `backvideo`, `flowtop`).
+- **Di trú đa máy tính (Cross-Machine Portability):** Khi chuyển repo sang máy mới hoặc ổ đĩa khác, chạy `F:\Mcode\mreavideo\.venv\Scripts\python.exe F:\Mcode\mreavideo\scripts\portable_setup.py` để tự động vá lỗi RapidOCR Python 3.13 (`h < 0.08`), kiểm tra 216MB ONNX models và cập nhật đường dẫn Global Skill.
 - **Lưu ý quan trọng (Anti-Blindspot):** Skill này **KHÔNG** nhận trực tiếp URL trực tuyến (YouTube, TikTok) do các nền tảng có cơ chế chặn bot và nén suy hao metadata. Người dùng cần tải video về máy trước khi yêu cầu phân tích.
 
 ---

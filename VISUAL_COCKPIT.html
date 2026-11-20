@@ -1,0 +1,826 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>mreavideo — Visual Cockpit, 61 ReelCrew Templates & Cross-Factory Handoff Hub</title>
+  <style>
+    :root {
+      --bg-base: #06090e;
+      --bg-card: #0d131c;
+      --bg-panel: #131c29;
+      --bg-elevated: #1a2636;
+      --border: rgba(148, 163, 184, 0.16);
+      --border-hi: rgba(45, 212, 191, 0.45);
+      --text-main: #f1f5f9;
+      --text-muted: #94a3b8;
+      --accent-teal: #2dd4bf;
+      --accent-cyan: #38bdf8;
+      --accent-purple: #c084fc;
+      --accent-emerald: #34d399;
+      --accent-amber: #fbbf24;
+      --accent-rose: #fb7185;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: "Segoe UI", -apple-system, BlinkMacSystemFont, Roboto, sans-serif;
+      background:
+        radial-gradient(circle at 12% 10%, rgba(45, 212, 191, 0.08), transparent 38%),
+        radial-gradient(circle at 88% 82%, rgba(56, 189, 248, 0.07), transparent 40%),
+        var(--bg-base);
+      color: var(--text-main);
+      min-height: 100vh;
+      padding: 20px 24px 48px;
+      line-height: 1.5;
+    }
+    .container { max-width: 1620px; margin: 0 auto; display: flex; flex-direction: column; gap: 18px; }
+    .topbar {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 18px 22px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 16px;
+    }
+    .brand h1 { font-size: 21px; font-weight: 800; letter-spacing: -0.02em; color: #fff; display: flex; align-items: center; gap: 10px; }
+    .brand p { font-size: 13px; color: var(--text-muted); margin-top: 3px; }
+    .kpis { display: flex; gap: 10px; flex-wrap: wrap; }
+    .kpi {
+      background: var(--bg-panel);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 8px 14px;
+      text-align: center;
+      min-width: 110px;
+    }
+    .kpi .v { font-size: 19px; font-weight: 800; color: var(--accent-teal); }
+    .kpi .l { font-size: 11px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.04em; }
+
+    .tabs { display: flex; gap: 8px; flex-wrap: wrap; }
+    .tab-btn {
+      background: var(--bg-card);
+      color: var(--text-muted);
+      border: 1px solid var(--border);
+      padding: 10px 16px;
+      border-radius: 10px;
+      font-size: 13.5px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+    .tab-btn:hover { color: #fff; border-color: var(--border-hi); }
+    .tab-btn.active {
+      background: linear-gradient(135deg, rgba(45, 212, 191, 0.18), rgba(56, 189, 248, 0.12));
+      color: #fff;
+      border-color: var(--accent-teal);
+      box-shadow: 0 0 18px rgba(45, 212, 191, 0.14);
+    }
+
+    .tab-pane { display: none; flex-direction: column; gap: 18px; }
+    .tab-pane.active { display: flex; }
+
+    .panel {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 20px;
+    }
+    .panel h2 { font-size: 17px; font-weight: 800; margin-bottom: 6px; color: #fff; }
+    .panel p.sub { font-size: 13px; color: var(--text-muted); margin-bottom: 16px; }
+
+    /* Mindmap / Workflow diagram */
+    .flow-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
+      gap: 16px;
+    }
+    .flow-stage {
+      background: var(--bg-panel);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    .flow-stage .st-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 8px;
+    }
+    .flow-stage .st-title { font-size: 15px; font-weight: 800; color: #fff; }
+    .flow-stage ul { list-style: none; display: flex; flex-direction: column; gap: 7px; font-size: 13px; color: var(--text-main); }
+    .flow-stage li { background: rgba(255,255,255,0.03); padding: 8px 10px; border-radius: 8px; border-left: 3px solid var(--accent-teal); }
+
+    /* Badges */
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      padding: 3px 9px;
+      border-radius: 999px;
+      font-size: 11.5px;
+      font-weight: 700;
+    }
+    .badge-emerald { background: rgba(52, 211, 153, 0.14); color: #6ee7b7; border: 1px solid rgba(52, 211, 153, 0.35); }
+    .badge-purple { background: rgba(192, 132, 252, 0.14); color: #d8b4fe; border: 1px solid rgba(192, 132, 252, 0.35); }
+    .badge-cyan { background: rgba(56, 189, 248, 0.14); color: #7dd3fc; border: 1px solid rgba(56, 189, 248, 0.35); }
+    .badge-amber { background: rgba(251, 191, 36, 0.15); color: #fde68a; border: 1px solid rgba(251, 191, 36, 0.4); }
+    .badge-rose { background: rgba(251, 113, 133, 0.15); color: #fda4af; border: 1px solid rgba(251, 113, 133, 0.4); }
+
+    /* Filters */
+    .filter-bar {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      align-items: center;
+      background: var(--bg-panel);
+      padding: 12px 14px;
+      border-radius: 12px;
+      border: 1px solid var(--border);
+    }
+    .filter-bar input, .filter-bar select {
+      background: var(--bg-card);
+      color: var(--text-main);
+      border: 1px solid var(--border);
+      padding: 8px 12px;
+      border-radius: 8px;
+      font-size: 13px;
+    }
+    .filter-bar input { min-width: 260px; flex: 1; }
+    .pill-btn {
+      background: var(--bg-card);
+      color: var(--text-muted);
+      border: 1px solid var(--border);
+      padding: 7px 12px;
+      border-radius: 8px;
+      font-size: 12.5px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+    .pill-btn.active, .pill-btn:hover {
+      color: #fff;
+      border-color: var(--accent-teal);
+      background: rgba(45, 212, 191, 0.13);
+    }
+
+    /* 61 Templates Grid */
+    .tpl-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(370px, 1fr));
+      gap: 16px;
+    }
+    .tpl-card {
+      background: var(--bg-panel);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 15px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      transition: border-color 0.15s ease;
+    }
+    .tpl-card:hover { border-color: var(--border-hi); }
+    .tpl-top { display: flex; justify-content: space-between; align-items: flex-start; gap: 8px; }
+    .tpl-id { font-size: 12px; font-weight: 800; color: var(--accent-teal); font-family: Consolas, monospace; }
+    .tpl-title { font-size: 15px; font-weight: 800; color: #fff; line-height: 1.35; }
+    .tpl-skill { font-family: Consolas, monospace; font-size: 12px; color: var(--accent-cyan); }
+    .tpl-desc { font-size: 12.5px; color: var(--text-muted); }
+
+    .video-box {
+      background: #000;
+      border-radius: 10px;
+      overflow: hidden;
+      border: 1px solid var(--border);
+      display: flex;
+      flex-direction: column;
+    }
+    .video-box video {
+      width: 100%;
+      max-height: 280px;
+      background: #000;
+      display: block;
+    }
+    .video-tabs {
+      display: flex;
+      gap: 6px;
+      padding: 7px 10px;
+      background: rgba(15, 23, 42, 0.9);
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .vid-tab-btn {
+      background: var(--bg-elevated);
+      color: var(--text-muted);
+      border: 1px solid var(--border);
+      padding: 3px 9px;
+      border-radius: 6px;
+      font-size: 11.5px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+    .vid-tab-btn.active {
+      background: var(--accent-teal);
+      color: #041311;
+      border-color: var(--accent-teal);
+    }
+
+    .action-row { display: flex; gap: 8px; flex-wrap: wrap; margin-top: auto; pt: 4px; }
+    .act-btn {
+      flex: 1;
+      background: var(--bg-card);
+      color: var(--text-main);
+      border: 1px solid var(--border);
+      padding: 7px 10px;
+      border-radius: 8px;
+      font-size: 12px;
+      font-weight: 700;
+      cursor: pointer;
+      text-align: center;
+      text-decoration: none;
+      transition: all 0.15s ease;
+    }
+    .act-btn:hover { border-color: var(--accent-teal); color: var(--accent-teal); }
+    .act-btn.primary {
+      background: rgba(45, 212, 191, 0.14);
+      border-color: rgba(45, 212, 191, 0.4);
+      color: #5eead4;
+    }
+
+    /* Analyzed Lab */
+    .lab-card {
+      background: var(--bg-panel);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 18px;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+    .swatches { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
+    .swatch {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 4px 10px;
+      border-radius: 8px;
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      font-family: Consolas, monospace;
+      font-size: 12px;
+      cursor: pointer;
+    }
+    .swatch-dot { width: 14px; height: 14px; border-radius: 4px; border: 1px solid rgba(255,255,255,0.25); }
+    .sfx-grid { display: flex; gap: 7px; flex-wrap: wrap; }
+    .sfx-chip {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      color: var(--text-main);
+      padding: 5px 10px;
+      border-radius: 8px;
+      font-size: 12px;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .sfx-chip:hover { border-color: var(--accent-teal); color: var(--accent-teal); }
+
+    table.shot-tbl { width: 100%; border-collapse: collapse; font-size: 12.5px; }
+    table.shot-tbl th, table.shot-tbl td {
+      border: 1px solid var(--border);
+      padding: 8px 10px;
+      text-align: left;
+    }
+    table.shot-tbl th { background: var(--bg-card); color: var(--text-muted); }
+
+    pre.codebox {
+      background: #05080c;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 12px 14px;
+      font-family: Consolas, monospace;
+      font-size: 12.5px;
+      color: #a5f3fc;
+      overflow-x: auto;
+      white-space: pre-wrap;
+      word-break: break-word;
+    }
+    .toast {
+      position: fixed;
+      bottom: 22px;
+      right: 22px;
+      background: #0f766e;
+      color: #fff;
+      padding: 12px 18px;
+      border-radius: 10px;
+      font-size: 13px;
+      font-weight: 700;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.45);
+      display: none;
+      z-index: 9999;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header class="topbar">
+      <div class="brand">
+        <h1>🎬 mreavideo — Trung Tâm Điều Phối Giải Phẫu Video & Kho 61 Templates ReelCrew</h1>
+        <p>Air-Gapped Forensic Engine (`F:\Mcode\mreavideo`) ➔ Cung cấp Blueprint, BGM, 19 SFX & Scene Matrix cho 3 Xưởng (`escbase_template` · `backvideo` · `flowtop`)</p>
+      </div>
+      <div class="kpis" id="kpi-container"></div>
+    </header>
+
+    <nav class="tabs">
+      <button class="tab-btn active" onclick="switchTab('tab-mindmap', this)">🗺️ 1. Bản Đồ Mindmap & Luồng 4 Xưởng</button>
+      <button class="tab-btn" onclick="switchTab('tab-templates', this)">🎬 2. Thư Viện 61 Video Templates (136 Videos Live)</button>
+      <button class="tab-btn" onclick="switchTab('tab-analyzed', this)">🔬 3. Phòng Lab Video Đã Mổ (Audio/SFX & Blueprint)</button>
+      <button class="tab-btn" onclick="switchTab('tab-portable', this)">🧳 4. Cẩm Nang Gọi Liên Dự Án & Di Trú Sang Máy Khác</button>
+    </nav>
+
+    <!-- TAB 1: MINDMAP & WORKFLOW -->
+    <section id="tab-mindmap" class="tab-pane active">
+      <div class="panel">
+        <h2>🧭 Toàn Cảnh Kiến Trúc Liên Xưởng: Từ Video Mẫu Đối Thủ ➔ Sản Xuất Hàng Loạt</h2>
+        <p class="sub">Bức tranh 4 trạm giúp Đại Ka nhìn rõ từng dự án đang nắm giữ vai trò gì và nối với nhau qua gói <code>HANDOFF_BLUEPRINT.md</code> như thế nào.</p>
+        <div class="flow-grid">
+          <div class="flow-stage">
+            <div class="st-head">
+              <span class="st-title">1️⃣ KHO MẪU REELCREW</span>
+              <span class="badge badge-amber">F:\mworkk\videosample\reels</span>
+            </div>
+            <ul>
+              <li><strong>61 Video Templates (Styles)</strong> chia thành <strong>5 Nhóm Nội Dung</strong> và <strong>14 Bộ Skill</strong>.</li>
+              <li><strong>136 Video Mẫu (.mp4)</strong> đã tải về local 100%, xem trực tiếp ở Tab 2 không cần mạng.</li>
+              <li>Mỗi mẫu có mã <code>skill · look</code> rõ ràng (vd: <code>animated-explainer · tech-brief</code>, <code>motion-graphics · voice-kinetic</code>).</li>
+              <li>Index chuẩn hóa tại <code>CATALOG.md</code> và <code>catalog.json</code>.</li>
+            </ul>
+          </div>
+
+          <div class="flow-stage">
+            <div class="st-head">
+              <span class="st-title">2️⃣ TRẠM GIẢI PHẪU MREAVIDEO</span>
+              <span class="badge badge-cyan">F:\Mcode\mreavideo</span>
+            </div>
+            <ul>
+              <li><strong>Lệnh chạy:</strong> <code>.venv\Scripts\python.exe run.py &lt;path-to-video.mp4&gt;</code></li>
+              <li><strong>OpenCV + FFmpeg:</strong> Tự động cắt Shots, trích xuất keyframes & element crops (<code>shots/shot_XXX_el_NN.jpg</code>), đo bảng màu Hex và quỹ đạo chuyển động.</li>
+              <li><strong>ONNX Audio Separation:</strong> Tách rời giọng đọc (<code>stems/vocals.wav</code>), nhạc nền sạch (<code>stems/music.wav</code>) và cắt riêng từng tiếng động SFX (<code>sfx/sfx_01..19.wav</code>).</li>
+              <li><strong>RapidOCR 3:</strong> Bóc tách timeline phụ đề (<code>packaging/overlays.ass</code> & <code>timeline.json</code>).</li>
+            </ul>
+          </div>
+
+          <div class="flow-stage">
+            <div class="st-head">
+              <span class="st-title">3️⃣ GÓI BÀN GIAO AIR-GAPPED</span>
+              <span class="badge badge-emerald">outputs\&lt;video&gt;\HANDOFF_BLUEPRINT.md</span>
+            </div>
+            <ul>
+              <li>Do <code>scripts/export_handoff.py</code> tự động biên dịch ngay sau khi mổ video.</li>
+              <li><strong>Chống tràn token:</strong> Rút gọn file <code>breakdown.json</code> (83,000+ tokens) xuống bản thiết kế sạch chỉ ~1,500 tokens.</li>
+              <li><strong>Khớp SHA256 tự động:</strong> Nhận diện ngay video vừa mổ thuộc Style nào trong 61 mẫu ReelCrew.</li>
+              <li><strong>Đo độ sạch SFX (SNR dB):</strong> Lọc sẵn các file <code>ding/click/pop/whoosh</code> đạt <code>SNR &gt;= 25dB</code>.</li>
+            </ul>
+          </div>
+
+          <div class="flow-stage">
+            <div class="st-head">
+              <span class="st-title">4️⃣ BA XƯỞNG SẢN XUẤT ĐÍCH</span>
+              <span class="badge badge-purple">Air-Gapped Consumers</span>
+            </div>
+            <ul>
+              <li><strong>🟢 Xưởng 1 — <code>escbase_template</code> (33 Styles):</strong> Dựng Slide HTML/DOM <code>390x693</code> (18 mẫu <code>visual-pattern-gallery</code>). Chuyên trị dòng Explainer, Tech-Brief, Sơ đồ, Paper, E-learning.</li>
+              <li><strong>🟣 Xưởng 2 — <code>E:\A1A\backvideo</code> (15 Styles):</strong> Dựng Remotion React <code>1080x1920</code> (14 Master Templates + <code>AntiReupGuard.tsx</code> + <code>anti_reup_cleaner.py</code>). Chuyên trị Product, BĐS, Kinetic Ads, Showreel.</li>
+              <li><strong>🔵 Xưởng 3 — <code>E:\A1A\flowtop</code> (13 Styles):</strong> Chuyên trị AI Video (Veo/Omni V2V), Vclip TTS 23-key Pool, Phụ đề nhảy chữ ASS, Talking-Head & Cắt Short hàng loạt.</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <div class="panel">
+        <h2>📊 Bảng Phân Luồng 14 Nhóm Skill ReelCrew Vào 3 Xưởng Của Đại Ka</h2>
+        <p class="sub">Bấm vào bất kỳ nhóm Skill nào bên dưới để nhảy sang Tab 2 và lọc đúng các video mẫu của nhóm đó.</p>
+        <div id="skill-matrix-container"></div>
+      </div>
+    </section>
+
+    <!-- TAB 2: 61 TEMPLATES GALLERY -->
+    <section id="tab-templates" class="tab-pane">
+      <div class="panel">
+        <h2>🎬 Thư Viện 61 Video Templates & Trình Phát Video Trực Tiếp (136 Videos)</h2>
+        <p class="sub">Xem trực tiếp video mẫu từ ổ cứng, lọc theo Xưởng đích hoặc Nhóm Skill, và bấm 1 nút để copy lệnh Giải Phẫu hoặc lệnh Giao Việc sang Xưởng đích.</p>
+        <div class="filter-bar">
+          <input type="text" id="search-input" placeholder="🔍 Tìm theo tên style, mã skill (vd: tech-brief, isometric, bđs, karaoke, luật, excel)..." oninput="renderTemplates()" />
+          <select id="category-select" onchange="renderTemplates()">
+            <option value="ALL">Tất cả 5 Nhóm Nội Dung</option>
+          </select>
+          <select id="skill-select" onchange="renderTemplates()">
+            <option value="ALL">Tất cả 14 Nhóm Skill</option>
+          </select>
+          <button class="pill-btn active" data-fac="ALL" onclick="setFactoryFilter('ALL', this)">Tất cả (61)</button>
+          <button class="pill-btn" data-fac="escbase" onclick="setFactoryFilter('escbase', this)">🟢 escbase_template (33)</button>
+          <button class="pill-btn" data-fac="backvideo" onclick="setFactoryFilter('backvideo', this)">🟣 backvideo (15)</button>
+          <button class="pill-btn" data-fac="flowtop" onclick="setFactoryFilter('flowtop', this)">🔵 flowtop (13)</button>
+        </div>
+        <div id="templates-count" style="margin: 12px 0; font-size: 13px; color: var(--text-muted);"></div>
+        <div class="tpl-grid" id="templates-grid"></div>
+      </div>
+    </section>
+
+    <!-- TAB 3: ANALYZED FORENSIC LAB -->
+    <section id="tab-analyzed" class="tab-pane">
+      <div class="panel">
+        <h2>🔬 Phòng Lab Các Video Đã Giải Phẫu (`F:\Mcode\mreavideo\outputs\`)</h2>
+        <p class="sub">Nghe thử trực tiếp các kênh âm thanh đã bóc tách (<code>music.wav</code>, <code>vocals.wav</code>, 19 tiếng <code>sfx_*.wav</code>), xem bảng màu Hex, cấu trúc Shots và copy lệnh Handoff sang <code>escbase_template</code> hoặc <code>backvideo</code>.</p>
+        <div id="analyzed-container" style="display: flex; flex-direction: column; gap: 18px;"></div>
+      </div>
+    </section>
+
+    <!-- TAB 4: PORTABILITY & CROSS-PROJECT PLAYBOOK -->
+    <section id="tab-portable" class="tab-pane">
+      <div class="panel">
+        <h2>🧳 Cẩm Nang Triển Khai Tinh Hoa: Gọi Từ Dự Án Khác & Mang Sang Máy Tính Khác</h2>
+        <p class="sub">Hướng dẫn thực chiến 3 kịch bản để Đại Ka sử dụng bộ năng lực này ở bất kỳ đâu mà không bao giờ làm hỏng dự án đích.</p>
+
+        <div class="flow-grid">
+          <div class="flow-stage">
+            <div class="st-head">
+              <span class="st-title">Kịch Bản A: Gọi Từ Project Khác Trên Cùng Máy Này</span>
+              <span class="badge badge-emerald">0 Copy · Dùng Ngay</span>
+            </div>
+            <p style="font-size: 13px; color: var(--text-muted);">
+              Skill <code>vrea-video-forensics</code> đã được đồng bộ sẵn ở Global Scope (<code>C:\Users\User\.gemini\config\skills\vrea-video-forensics\SKILL.md</code>). Khi Đại Ka đang mở <code>escbase_template</code>, <code>E:\A1A\backvideo</code> hoặc <code>E:\A1A\flowtop</code>, chỉ cần dán câu lệnh sau cho AI Agent:
+            </p>
+            <pre class="codebox" id="cmd-cross-proj">Đọc file Handoff Blueprint tại F:\Mcode\mreavideo\outputs\r1\HANDOFF_BLUEPRINT.md và F:\Mcode\mreavideo\outputs\r1\video\remake.md. Hãy áp dụng bảng màu, nhịp chuyển cảnh và bộ file âm thanh SFX sạch trong F:\Mcode\mreavideo\outputs\r1\sfx để dựng video/template theo đúng chuẩn của repo hiện tại.</pre>
+            <button class="act-btn primary" onclick="copyText(document.getElementById('cmd-cross-proj').innerText)">📋 Copy Lệnh Giao Việc Liên Project</button>
+          </div>
+
+          <div class="flow-stage">
+            <div class="st-head">
+              <span class="st-title">Kịch Bản B: Copy Gói Tinh Hoa Nhẹ Sang Máy Khác</span>
+              <span class="badge badge-amber">Chỉ Dựng Video · Không Cần Cài Python/ONNX</span>
+            </div>
+            <p style="font-size: 13px; color: var(--text-muted);">
+              Nếu máy tính kia chỉ chạy xưởng <code>escbase_template</code> hoặc <code>backvideo</code> để render video mà không cần chạy AI mổ video mới, Đại Ka chỉ cần copy 2 thư mục nhẹ này:
+            </p>
+            <ul>
+              <li><strong>1. Thư mục kết quả đã mổ:</strong> <code>F:\Mcode\mreavideo\outputs\&lt;ten_video&gt;\</code> (chứa sẵn <code>HANDOFF_BLUEPRINT.md</code>, <code>stems/music.wav</code>, <code>sfx/sfx_01..19.wav</code>, <code>shots/</code>).</li>
+              <li><strong>2. File tổng đài này + Kho mẫu:</strong> <code>F:\Mcode\mreavideo\VISUAL_COCKPIT.html</code> và <code>F:\mworkk\videosample\reels\</code>.</li>
+            </ul>
+          </div>
+
+          <div class="flow-stage">
+            <div class="st-head">
+              <span class="st-title">Kịch Bản C: Di Trú Toàn Bộ Trạm Giải Phẫu Sang Máy Mới</span>
+              <span class="badge badge-cyan">Full Engine + 216MB ONNX + Patch Guard</span>
+            </div>
+            <p style="font-size: 13px; color: var(--text-muted);">
+              Khi clone hoặc copy cả repo <code>mreavideo</code> sang máy tính mới (ổ đĩa khác như <code>D:\</code> hoặc <code>C:\</code>), chạy đúng 1 lệnh chuẩn hóa dưới đây để tự động vá lỗi RapidOCR Python 3.13 (<code>h &lt; 0.08</code>), kiểm tra 216MB model ONNX và tự cập nhật đường dẫn trong Global Skill:
+            </p>
+            <pre class="codebox" id="cmd-portable-setup"># 1. Copy kèm 2 file ONNX (~216MB) để không phải tải lại:
+#    C:\Users\User\.cache\rea-video\models\UVR-MDX-NET-Inst_HQ_3.onnx
+#    C:\Users\User\.cache\rea-video\models\bandit-v2-multi.onnx
+
+# 2. Chạy trình tự động cấu hình & vá Submodule:
+.\.venv\Scripts\python.exe scripts\portable_setup.py
+
+# 3. Chạy kiểm định cơ học 54 tests (Exit Code 0):
+.\.venv\Scripts\python.exe scripts\check.py</pre>
+            <button class="act-btn primary" onclick="copyText(document.getElementById('cmd-portable-setup').innerText)">📋 Copy Quy Trình Setup Máy Mới</button>
+          </div>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <div class="toast" id="toast">Đã copy vào Clipboard!</div>
+  <audio id="global-audio-player" style="display:none;"></audio>
+
+  <script>
+    const COCKPIT_DATA = {"workspace_root": "F:\\Mcode\\mreavideo", "workspace_posix": "F:/Mcode/mreavideo", "reels_dir": "F:\\mworkk\\videosample\\reels", "total_styles": 61, "total_videos": 136, "total_analyzed": 4, "styles": [{"style_id": 1, "title": "Bản tin công nghệ trên sân khấu teal liền mạch", "category": "Nội dung thành video diễn giải", "skill": "animated-explainer · tech-brief", "skill_root": "animated-explainer", "description": "Kể một tin công nghệ trong 45–90 s: từng ý hiện nối tiếp trên một sân khấu teal, có ảnh chụp màn hình thật.", "factory": {"id": "escbase", "name": "escbase_template (HTML/DOM 390x693)", "path": "G:\\GRAM\\escbase-template3-83.v4.86\\escbase_template", "badge_cls": "badge-emerald", "also_fits": "E:\\A1A\\backvideo (Remotion 1080x1920)"}, "videos": [{"filename": "tech-brief-6021ac5d.mp4", "local_path": "F:\\mworkk\\videosample\\reels\\tech-brief-6021ac5d.mp4", "file_url": "file:///F:/mworkk/videosample/reels/tech-brief-6021ac5d.mp4", "size_mb": 1.05}, {"filename": "tech-brief-22c0c2d2.mp4", "local_path": "F:\\mworkk\\videosample\\reels\\tech-brief-22c0c2d2.mp4", "file_url": "file:///F:/mworkk/videosample/reels/tech-brief-22c0c2d2.mp4", "size_mb": 1.1}, {"filename": "tech-brief-fdd03fd9.mp4", "local_path": "F:\\mworkk\\videosample\\reels\\tech-brief-fdd03fd9.mp4", "file_url": "file:///F:/mworkk/videosample/reels/tech-brief-fdd03fd9.mp4", "size_mb": 1.15}], "analyzed_outputs": ["r1"]}, {"style_id": 2, "title": "Bên trong một thứ quen thuộc hoạt động thế nào", "category": "Nội dung thành video diễn giải", "skill": "animated-explainer · under-the-hood", "skill_root": "animated-explainer", "description": "Mở ra bên trong một vật quen thuộc (thẻ NFC, màn cảm ứng…) và cho thấy nó chạy thế nào, có robot dẫn chuyện.", "factory": {"id": "escbase", "name": "escbase_template (HTML/DOM 390x693)", "path": "G:\\GRAM\\escbase-template3-83.v4.86\\escbase_template", "badge_cls": "badge-emerald", "also_fits": "E:\\A1A\\backvideo (Remotion 1080x1920)"}, "videos": [{"filename": "under-the-hood-cbeed839.mp4", "local_path": "F:\\mworkk\\videosample\\reels\\under-the-hood-cbeed839.mp4", "file_url": "file:///F:/mworkk/videosample/reels/under-the-hood-cbeed839.mp4", "size_mb": 1.38}, {"filename": "under-the-hood-96c3b4a7.mp4", "local_path": "F:\\mworkk\\videosample\\reels\\under-the-hood-96c3b4a7.mp4", "file_url": "file:///F:/mworkk/videosample/reels/under-the-hood-96c3b4a7.mp4", "size_mb": 1.45}], "analyzed_outputs": []}, {"style_id": 3, "title": "Nghịch lý toán, lý vẽ bằng hình học thật", "category": "Nội dung thành video diễn giải", "skill": "animated-explainer · science-paradox", "skill_root": "animated-explainer", "description": "Một nghịch lý toán hay vật lý được vẽ bằng hình học thật, chuyển động chính xác theo lời giải thích.", "factory": {"id": "escbase", "name": "escbase_template (HTML/DOM 390x693)", "path": "G:\\GRAM\\escbase-template3-83.v4.86\\escbase_template", "badge_cls": "badge-emerald", "also_fits": "E:\\A1A\\backvideo (Remotion 1080x1920)"}, "videos": [{"filename": "science-paradox-32b18a7c.mp4", "local_path": "F:\\mworkk\\videosample\\reels\\science-paradox-32b18a7c.mp4", "file_url": "file:///F:/mworkk/videosample/reels/science-paradox-32b18a7c.mp4", "size_mb": 1.07}], "analyzed_outputs": []}, {"style_id": 4, "title": "Một khái niệm AI trên sơ đồ node sống", "category": "Nội dung thành video diễn giải", "skill": "animated-explainer · agent-diagram", "skill_root": "animated-explainer", "description": "Một khái niệm AI (agent, sub-agent, bộ nhớ…) dựng trên sơ đồ node sống, mỗi khối sáng lên đúng lúc được nói.", "factory": {"id": "escbase", "name": "escbase_template (HTML/DOM 390x693)", "path": "G:\\GRAM\\escbase-template3-83.v4.86\\escbase_template", "badge_cls": "badge-emerald", "also_fits": "E:\\A1A\\backvideo (Remotion 1080x1920)"}, "videos": [{"filename": "agent-diagram-5526c4d5.mp4", "local_path": "F:\\mworkk\\videosample\\reels\\agent-diagram-5526c4d5.mp4", "file_url": "file:///F:/mworkk/videosample/reels/agent-diagram-5526c4d5.mp4", "size_mb": 1.02}], "analyzed_outputs": []}, {"style_id": 5, "title": "Khái niệm bán hàng online trên một bảng sơ đồ", "category": "Nội dung thành video diễn giải", "skill": "animated-explainer · ecommerce-diagram", "skill_root": "animated-explainer", "description": "Giải thích một con số bán hàng online (phễu, lợi nhuận, tỉ lệ chốt) trên bảng sơ đồ giấy kem.", "factory": {"id": "escbase", "name": "escbase_template (HTML/DOM 390x693)", "path": "G:\\GRAM\\escbase-template3-83.v4.86\\escbase_template", "badge_cls": "badge-emerald", "also_fits": "E:\\A1A\\backvideo (Remotion 1080x1920)"}, "videos": [{"filename": "ecommerce-diagram-7aa9aeed.mp4", "local_path": "F:\\mworkk\\videosample\\reels\\ecommerce-diagram-7aa9aeed.mp4", "file_url": "file:///F:/mworkk/videosample/reels/ecommerce-diagram-7aa9aeed.mp4", "size_mb": 1.1}, {"filename": "ecommerce-diagram-43aabe1f.mp4", "local_path": "F:\\mworkk\\videosample\\reels\\ecommerce-diagram-43aabe1f.mp4", "file_url": "file:///F:/mworkk/videosample/reels/ecommerce-diagram-43aabe1f.mp4", "size_mb": 1.12}], "analyzed_outputs": []}, {"style_id": 6, "title": "Sơ đồ tư duy lớn vẽ tay, camera đi theo nhánh", "category": "Nội dung thành video diễn giải", "skill": "animated-explainer · mindmap", "skill_root": "animated-explainer", "description": "Sơ đồ tư duy vẽ tay trên một canvas lớn, camera lướt theo từng nhánh khi giọng đọc nhắc tới.", "factory": {"id": "escbase", "name": "escbase_template (HTML/DOM 390x693)", "path": "G:\\GRAM\\escbase-template3-83.v4.86\\escbase_template", "badge_cls": "badge-emerald", "also_fits": "E:\\A1A\\backvideo (Remotion 1080x1920)"}, "videos": [{"filename": "mindmap-4a059992.mp4", "local_path": "F:\\mworkk\\videosample\\reels\\mindmap-4a059992.mp4", "file_url": "file:///F:/mworkk/videosample/reels/mindmap-4a059992.mp4", "size_mb": 1.1}, {"filename": "mindmap-883cdfbc.mp4", "local_path": "F:\\mworkk\\videosample\\reels\\mindmap-883cdfbc.mp4", "file_url": "file:///F:/mworkk/videosample/reels/mindmap-883cdfbc.mp4", "size_mb": 1.17}, {"filename": "mindmap-8496638f.mp4", "local_path": "F:\\mworkk\\videosample\\reels\\mindmap-8496638f.mp4", "file_url": "file:///F:/mworkk/videosample/reels/mindmap-8496638f.mp4", "size_mb": 1.09}], "analyzed_outputs": []}, {"style_id": 7, "title": "Cây kỹ thuật treo trên dây đỏ", "category": "Nội dung thành video diễn giải", "skill": "animated-explainer · tree", "skill_root": "animated-explainer", "description": "Cấu trúc kỹ thuật (thư mục, kiến trúc, quy trình) treo thành cây trên dây đỏ, từng nút thả xuống theo lời.", "factory": {"id": "escbase", "name": "escbase_template (HTML/DOM 390x693)", "path": "G:\\GRAM\\escbase-template3-83.v4.86\\escbase_template", "badge_cls": "badge-emerald", "also_fits": "E:\\A1A\\backvideo (Remotion 1080x1920)"}, "videos": [{"filename": "tree-7cc8d27d.mp4", "local_path": "F:\\mworkk\\videosample\\reels\\tree-7cc8d27d.mp4", "file_url": "file:///F:/mworkk/videosample/reels/tree-7cc8d27d.mp4", "size_mb": 0.6}], "analyzed_outputs": []}, {"style_id": 8, "title": "Chấm trắng biến hình trên nền đen, tối giản", "category": "Nội dung thành video diễn giải", "skill": "animated-explainer · morph-minimal", "skill_root": "animated-explainer", "description": "Một chấm trắng trên nền đen biến hình thành từng ý: tối giản, hợp chủ đề coaching, tư duy.", "factory": {"id": "escbase", "name": "escbase_template (HTML/DOM 390x693)", "path": "G:\\GRAM\\escbase-template3-83.v4.86\\escbase_template", "badge_cls": "badge-emerald", "also_fits": "E:\\A1A\\backvideo (Remotion 1080x1920)"}, "videos": [{"filename": "morph-minimal-0f311391.mp4", "local_path": "F:\\mworkk\\videosample\\reels\\morph-minimal-0f311391.mp4", "file_url": "file:///F:/mworkk/videosample/reels/morph-minimal-0f311391.mp4", "size_mb": 0.89}], "analyzed_outputs": []}, {"style_id": 9, "title": "So 3–4 lựa chọn dễ nhầm, chốt nên chọn gì", "category": "Nội dung thành video diễn giải", "skill": "animated-explainer · option-compare", "skill_root": "animated-explainer", "description": "So 3–4 lựa chọn dễ nhầm (công cụ, gói, cách làm) rồi chốt nên chọn cái nào cho trường hợp nào.", "factory": {"id": "escbase", "name": "escbase_template (HTML/DOM 390x693)", "path": "G:\\GRAM\\escbase-template3-83.v4.86\\escbase_template", "badge_cls": "badge-emerald", "also_fits": "E:\\A1A\\backvideo (Remotion 1080x1920)"}, "videos": [{"filename": "option-compare-a4614660.mp4", "local_path": "F:\\mworkk\\videosample\\reels\\option-compare-a4614660.mp4", "file_url": "file:///F:/mworkk/videosample/reels/option-compare-a4614660.mp4", "size_mb": 1.18}, {"filename": "option-compare-ed6e170a.mp4", "local_path": "F:\\mworkk\\videosample\\reels\\option-compare-ed6e170a.mp4", "file_url": "file:///F:/mworkk/videosample/reels/option-compare-ed6e170a.mp4", "size_mb": 1.0}, {"filename": "option-compare-2e1d3bcc.mp4", "local_path": "F:\\mworkk\\videosample\\reels\\option-compare-2e1d3bcc.mp4", "file_url": "file:///F:/mworkk/videosample/reels/option-compare-2e1d3bcc.mp4", "size_mb": 0.93}], "analyzed_outputs": []}, {"style_id": 10, "title": "Một hiệu ứng tâm lý, sân khấu rêu trầm", "category": "Nội dung thành video diễn giải", "skill": "animated-explainer · reflect-effect", "skill_root": "animated-explainer", "description": "Một hiệu ứng tâm lý (Zeigarnik, mỏ neo…) kể chậm rãi trên sân khấu xanh rêu, hợp video suy ngẫm 16:9.", "factory": {"id": "escbase", "name": "escbase_template (HTML/DOM 390x693)", "path": "G:\\GRAM\\escbase-template3-83.v4.86\\escbase_template", "badge_cls": "badge-emerald", "also_fits": "E:\\A1A\\backvideo (Remotion 1080x1920)"}, "videos": [{"filename": "reflect-effect-72afe8bd.mp4", "local_path": "F:\\mworkk\\videosample\\reels\\reflect-effect-72afe8bd.mp4", "file_url": "file:///F:/mworkk/videosample/reels/reflect-effect-72afe8bd.mp4", "size_mb": 1.1}], "analyzed_outputs": []}, {"style_id": 11, "title": "Sổ tay bút chì, robot mascot, bảng gỗ", "category": "Nội dung thành video diễn giải", "skill": "animated-explainer · ink-paper", "skill_root": "animated-explainer", "description": "Giải thích trên sổ tay bút chì và bảng gỗ, có robot mascot, giọng ấm như đang ghi chú cho bạn.", "factory": {"id": "escbase", "name": "escbase_template (HTML/DOM 390x693)", "path": "G:\\GRAM\\escbase-template3-83.v4.86\\escbase_template", "badge_cls": "badge-emerald", "also_fits": "E:\\A1A\\backvideo (Remotion 1080x1920)"}, "videos": [{"filename": "ink-paper-8d3cae3b.mp4", "local_path": "F:\\mworkk\\videosample\\reels\\ink-paper-8d3cae3b.mp4", "file_url": "file:///F:/mworkk/videosample/reels/ink-paper-8d3cae3b.mp4", "size_mb": 0.83}, {"filename": "ink-paper-842816c2.mp4", "local_path": "F:\\mworkk\\videosample\\reels\\ink-paper-842816c2.mp4", "file_url": "file:///F:/mworkk/videosample/reels/ink-paper-842816c2.mp4", "size_mb": 0.92}], "analyzed_outputs": []}, {"style_id": 12, "title": "Explainer khoa học điện ảnh khoảng 30 giây", "category": "Nội dung thành video diễn giải", "skill": "animated-explainer · cinematic", "skill_root": "animated-explainer", "description": "Câu hỏi khoa học đời thường trả lời trong ~30 s bằng hình minh hoạ điện ảnh và một con số gây bất ngờ.", "factory": {"id": "escbase", "name": "escbase_template (HTML/DOM 390x693)", "path": "G:\\GRAM\\escbase-template3-83.v4.86\\escbase_template", "badge_cls": "badge-emerald", "also_fits": "E:\\A1A\\backvideo (Remotion 1080x1920)"}, "videos": [{"filename": "cinematic-d1f80684.mp4", "local_path": "F:\\mworkk\\videosample\\reels\\cinematic-d1f80684.mp4", "file_url": "file:///F:/mworkk/videosample/reels/cinematic-d1f80684.mp4", "size_mb": 1.0}, {"filename": "cinematic-05e95b78.mp4", "local_path": "F:\\mworkk\\videosample\\reels\\cinematic-05e95b78.mp4", "file_url": "file:///F:/mworkk/videosample/reels/cinematic-05e95b78.mp4", "size_mb": 1.07}, {"filename": "paper-fold.mp4", "local_path": "F:\\mworkk\\videosample\\reels\\paper-fold.mp4", "file_url": "file:///F:/mworkk/videosample/reels/paper-fold.mp4", "size_mb": 7.95}], "analyzed_outputs": []}, {"style_id": 13, "title": "Nhà máy isometric cho một quy trình", "category": "Nội dung thành video diễn giải", "skill": "animated-explainer · isometric-factory", "skill_root": "animated-explainer", "description": "Một quy trình nhiều bước vẽ thành nhà máy isometric: hộp chạy qua từng trạm, bộ đếm tăng theo nhạc.", "factory": {"id": "escbase", "name": "escbase_template (HTML/DOM 390x693)", "path": "G:\\GRAM\\escbase-template3-83.v4.86\\escbase_template", "badge_cls": "badge-emerald", "also_fits": "E:\\A1A\\backvideo (Remotion 1080x1920)"}, "videos": [{"filename": "isometric-factory-7173e23d.mp4", "local_path": "F:\\mworkk\\videosample\\reels\\isometric-factory-7173e23d.mp4", "file_url": "file:///F:/mworkk/videosample/reels/isometric-factory-7173e23d.mp4", "size_mb": 1.92}, {"filename": "isometric-factory-4abf5508.mp4", "local_path": "F:\\mworkk\\videosample\\reels\\isometric-factory-4abf5508.mp4", "file_url": "file:///F:/mworkk/videosample/reels/isometric-factory-4abf5508.mp4", "size_mb": 2.0}, {"filename": "jev-factory.mp4", "local_path": "F:\\mworkk\\videosample\\reels\\jev-factory.mp4", "file_url": "file:///F:/mworkk/videosample/reels/jev-factory.mp4", "size_mb": 5.42}], "analyzed_outputs": []}, {"style_id": 14, "title": "Cỗ máy isometric chi tiết, chạy chính là ý tưởng", "category": "Nội dung thành video diễn giải", "skill": "animated-explainer · machine", "skill_root": "animated-explainer", "description": "Một ý tưởng kỹ thuật thành cỗ máy isometric chi tiết; cỗ máy chạy chính là cách ý tưởng vận hành.", "factory": {"id": "escbase", "name": "escbase_template (HTML/DOM 390x693)", "path": "G:\\GRAM\\escbase-template3-83.v4.86\\escbase_template", "badge_cls": "badge-emerald", "also_fits": "E:\\A1A\\backvideo (Remotion 1080x1920)"}, "videos": [{"filename": "machine-0021e316.mp4", "local_path": "F:\\mworkk\\videosample\\reels\\machine-0021e316.mp4", "file_url": "file:///F:/mworkk/videosample/reels/machine-0021e316.mp4", "size_mb": 0.4}, {"filename": "machine-f328e596.mp4", "local_path": "F:\\mworkk\\videosample\\reels\\machine-f328e596.mp4", "file_url": "file:///F:/mworkk/videosample/reels/machine-f328e596.mp4", "size_mb": 1.22}, {"filename": "dong-ho-so.mp4", "local_path": "F:\\mworkk\\videosample\\reels\\dong-ho-so.mp4", "file_url": "file:///F:/mworkk/videosample/reels/dong-ho-so.mp4", "size_mb": 0.82}], "analyzed_outputs": []}, {"style_id": 15, "title": "Vẽ tay bảng trắng theo giọng đọc", "category": "Nội dung thành video diễn giải", "skill": "animated-explainer · whiteboard", "skill_root": "animated-explainer", "description": "Bàn tay vẽ từng hình lên bảng trắng theo giọng đọc, nét trước màu sau, kiểu video giải thích kinh điển.", "factory": {"id": "escbase", "name": "escbase_template (HTML/DOM 390x693)", "path": "G:\\GRAM\\escbase-template3-83.v4.86\\escbase_template", "badge_cls": "badge-emerald", "also_fits": "E:\\A1A\\backvideo (Remotion 1080x1920)"}, "videos": [{"filename": "whiteboard-f0cc73e1.mp4", "local_path": "F:\\mworkk\\videosample\\reels\\whiteboard-f0cc73e1.mp4", "file_url": "file:///F:/mworkk/videosample/reels/whiteboard-f0cc73e1.mp4", "size_mb": 1.48}, {"filename": "whiteboard-0587e1c8.mp4", "local_path": "F:\\mworkk\\videosample\\reels\\whiteboard-0587e1c8.mp4", "file_url": "file:///F:/mworkk/videosample/reels/whiteboard-0587e1c8.mp4", "size_mb": 1.76}, {"filename": "cau-vong.mp4", "local_path": "F:\\mworkk\\videosample\\reels\\cau-vong.mp4", "file_url": "file:///F:/mworkk/videosample/reels/cau-vong.mp4", "size_mb": 2.78}], "analyzed_outputs": []}, {"style_id": 16, "title": "Lộ trình đường đỏ trên địa hình 3D", "category": "Nội dung thành video diễn giải", "skill": "animated-explainer · route-3d", "skill_root": "animated-explainer", "description": "Lộ trình du lịch thành đường đỏ chạy trên địa hình 3D, mỗi điểm dừng có tên và ngày.", "factory": {"id": "escbase", "name": "escbase_template (HTML/DOM 390x693)", "path": "G:\\GRAM\\escbase-template3-83.v4.86\\escbase_template", "badge_cls": "badge-emerald", "also_fits": "E:\\A1A\\backvideo (Remotion 1080x1920)"}, "videos": [{"filename": "route-3d-2f25dceb.mp4", "local_path": "F:\\mworkk\\videosample\\reels\\route-3d-2f25dceb.mp4", "file_url": "file:///F:/mworkk/videosample/reels/route-3d-2f25dceb.mp4", "size_mb": 4.23}], "analyzed_outputs": []}, {"style_id": 17, "title": "Explainer theo ngách có mascot (21 ngách: luật, du lịch, bán hàng…)", "category": "Nội dung thành video diễn giải", "skill": "animated-explainer · niche", "skill_root": "animated-explainer", "description": "Explainer có mascot cho 21 ngách (luật, du lịch, bán hàng, tiếng Anh…) với widget riêng từng ngách.", "factory": {"id": "escbase", "name": "escbase_template (HTML/DOM 390x693)", "path": "G:\\GRAM\\escbase-template3-83.v4.86\\escbase_template", "badge_cls": "badge-emerald", "also_fits": "E:\\A1A\\backvideo (Remotion 1080x1920)"}, "videos": [{"filename": "niche-f6d20d32.mp4", "local_path": "F:\\mworkk\\videosample\\reels\\niche-f6d20d32.mp4", "file_url": "file:///F:/mworkk/videosample/reels/niche-f6d20d32.mp4", "size_mb": 1.11}, {"filename": "niche-ac717312.mp4", "local_path": "F:\\mworkk\\videosample\\reels\\niche-ac717312.mp4", "file_url": "file:///F:/mworkk/videosample/reels/niche-ac717312.mp4", "size_mb": 1.3}, {"filename": "niche-f13b633c.mp4", "local_path": "F:\\mworkk\\videosample\\reels\\niche-f13b633c.mp4", "file_url": "file:///F:/mworkk/videosample/reels/niche-f13b633c.mp4", "size_mb": 1.17}, {"filename": "niche-ab5b89f7.mp4", "local_path": "F:\\mworkk\\videosample\\reels\\niche-ab5b89f7.mp4", "file_url": "file:///F:/mworkk/videosample/reels/niche-ab5b89f7.mp4", "size_mb": 1.18}, {"filename": "niche-202a1560.mp4", "local_path": "F:\\mworkk\\videosample\\reels\\niche-202a1560.mp4", "file_url": "file:///F:/mworkk/videosample/reels/niche-202a1560.mp4", "size_mb": 1.59}, {"filename": "niche-d405410e.mp4", "local_path": "F:\\mworkk\\videosample\\reels\\niche-d405410e.mp4", "file_url": "file:///F:/mworkk/videosample/reels/niche-d405410e.mp4", "size_mb": 1.52}, {"filename": "niche-dd6c4b62.mp4", "local_path": "F:\\mworkk\\videosample\\reels\\niche-dd6c4b62.mp4", "file_url": "file:///F:/mworkk/videosample/reels/niche-dd6c4b62.mp4", "size_mb": 1.16}], "analyzed_outputs": []}, {"style_id": 18, "title": "AI cho doanh nghiệp", "category": "Nội dung thành video diễn giải", "skill": "animated-explainer · ai-for-business", "skill_root": "animated-explainer", "description": "Một quy trình làm tay trong doanh nghiệp được AI agent làm thay, kể cho chủ doanh nghiệp không rành công nghệ, phong cách robot vẽ chì.", "factory": {"id": "escbase", "name": "escbase_template (HTML/DOM 390x693)", "path": "G:\\GRAM\\escbase-template3-83.v4.86\\escbase_template", "badge_cls": "badge-emerald", "also_fits": "E:\\A1A\\backvideo (Remotion 1080x1920)"}, "videos": [{"filename": "ai-inbox-shop.mp4", "local_path": "F:\\mworkk\\videosample\\reels\\ai-inbox-shop.mp4", "file_url": "file:///F:/mworkk/videosample/reels/ai-inbox-shop.mp4", "size_mb": 3.1}], "analyzed_outputs": []}, {"style_id": 19, "title": "Bán hàng online và bán lẻ", "category": "Nội dung thành video diễn giải", "skill": "animated-explainer · ecommerce-retail", "skill_root": "animated-explainer", "description": "Một bài học bán hàng thực tế trên hoá đơn nhiệt dán lên bìa kraft, có mascot hộp các tông.", "factory": {"id": "escbase", "name": "escbase_template (HTML/DOM 390x693)", "path": "G:\\GRAM\\escbase-template3-83.v4.86\\escbase_template", "badge_cls": "badge-emerald", "also_fits": "E:\\A1A\\backvideo (Remotion 1080x1920)"}, "videos": [{"filename": "lai-that-moi-don.mp4", "local_path": "F:\\mworkk\\videosample\\reels\\lai-that-moi-don.mp4", "file_url": "file:///F:/mworkk/videosample/reels/lai-that-moi-don.mp4", "size_mb": 2.94}], "analyzed_outputs": []}, {"style_id": 20, "title": "Sửa lỗi tiếng Anh", "category": "Nội dung thành video diễn giải", "skill": "animated-explainer · english-learning", "skill_root": "animated-explainer", "description": "2-3 lỗi tiếng Anh người Việt hay mắc: câu sai gạch đi, câu đúng, IPA có chấm trọng âm, kèm câu đố.", "factory": {"id": "escbase", "name": "escbase_template (HTML/DOM 390x693)", "path": "G:\\GRAM\\escbase-template3-83.v4.86\\escbase_template", "badge_cls": "badge-emerald", "also_fits": "E:\\A1A\\backvideo (Remotion 1080x1920)"}, "videos": [{"filename": "english-3-loi.mp4", "local_path": "F:\\mworkk\\videosample\\reels\\english-3-loi.mp4", "file_url": "file:///F:/mworkk/videosample/reels/english-3-loi.mp4", "size_mb": 2.47}], "analyzed_outputs": []}, {"style_id": 21, "title": "Giải thích luật mới", "category": "Nội dung thành video diễn giải", "skill": "animated-explainer · law-legal", "skill_root": "animated-explainer", "description": "Một luật, nghị định hoặc thông tư mới thay đổi gì, phong cách hồ sơ công văn với mascot cú thư ký.", "factory": {"id": "escbase", "name": "escbase_template (HTML/DOM 390x693)", "path": "G:\\GRAM\\escbase-template3-83.v4.86\\escbase_template", "badge_cls": "badge-emerald", "also_fits": "E:\\A1A\\backvideo (Remotion 1080x1920)"}, "videos": [{"filename": "nd-356-du-lieu.mp4", "local_path": "F:\\mworkk\\videosample\\reels\\nd-356-du-lieu.mp4", "file_url": "file:///F:/mworkk/videosample/reels/nd-356-du-lieu.mp4", "size_mb": 3.5}], "analyzed_outputs": []}, {"style_id": 22, "title": "Mẹo văn phòng", "category": "Nội dung thành video diễn giải", "skill": "animated-explainer · office-skills", "skill_root": "animated-explainer", "description": "Một mẹo văn phòng (hàm, phím tắt, mẫu email) từ cách làm chậm tới cách mới, có mascot dập ghim.", "factory": {"id": "escbase", "name": "escbase_template (HTML/DOM 390x693)", "path": "G:\\GRAM\\escbase-template3-83.v4.86\\escbase_template", "badge_cls": "badge-emerald", "also_fits": "E:\\A1A\\backvideo (Remotion 1080x1920)"}, "videos": [{"filename": "sumif-office.mp4", "local_path": "F:\\mworkk\\videosample\\reels\\sumif-office.mp4", "file_url": "file:///F:/mworkk/videosample/reels/sumif-office.mp4", "size_mb": 3.26}], "analyzed_outputs": []}, {"style_id": 23, "title": "Lịch trình du lịch", "category": "Nội dung thành video diễn giải", "skill": "animated-explainer · travel", "skill_root": "animated-explainer", "description": "Một chuyến đi 2-3 ngày theo ngân sách: đi lúc nào, từng ngày, bản đồ tuyến, bảng chi phí cộng đúng, phong cách poster risograph.", "factory": {"id": "escbase", "name": "escbase_template (HTML/DOM 390x693)", "path": "G:\\GRAM\\escbase-template3-83.v4.86\\escbase_template", "badge_cls": "badge-emerald", "also_fits": "E:\\A1A\\backvideo (Remotion 1080x1920)"}, "videos": [{"filename": "da-lat-48h.mp4", "local_path": "F:\\mworkk\\videosample\\reels\\da-lat-48h.mp4", "file_url": "file:///F:/mworkk/videosample/reels/da-lat-48h.mp4", "size_mb": 3.76}], "analyzed_outputs": []}, {"style_id": 24, "title": "Lịch sử Việt Nam", "category": "Nội dung thành video diễn giải", "skill": "animated-explainer · vietnam-history", "skill_root": "animated-explainer", "description": "Một sự kiện hoặc nhân vật lịch sử Việt Nam theo phong cách tranh khắc gỗ dân gian trên giấy dó, có mascot thư sinh.", "factory": {"id": "escbase", "name": "escbase_template (HTML/DOM 390x693)", "path": "G:\\GRAM\\escbase-template3-83.v4.86\\escbase_template", "badge_cls": "badge-emerald", "also_fits": "E:\\A1A\\backvideo (Remotion 1080x1920)"}, "videos": [{"filename": "bach-dang-938.mp4", "local_path": "F:\\mworkk\\videosample\\reels\\bach-dang-938.mp4", "file_url": "file:///F:/mworkk/videosample/reels/bach-dang-938.mp4", "size_mb": 4.29}], "analyzed_outputs": []}, {"style_id": 25, "title": "Đi qua paper từng mục, giấy kem, sơ đồ dựng dần", "category": "Nội dung thành video diễn giải", "skill": "article-to-video · paper-walkthrough", "skill_root": "article-to-video", "description": "Đi qua một bài nghiên cứu từng mục trên nền giấy kem, sơ đồ và biểu đồ dựng dần theo lời đọc.", "factory": {"id": "escbase", "name": "escbase_template (HTML/DOM 390x693)", "path": "G:\\GRAM\\escbase-template3-83.v4.86\\escbase_template", "badge_cls": "badge-emerald", "also_fits": "E:\\A1A\\backvideo (macro-documentary / news-commentary)"}, "videos": [{"filename": "paper-walkthrough-ac5486bb.mp4", "local_path": "F:\\mworkk\\videosample\\reels\\paper-walkthrough-ac5486bb.mp4", "file_url": "file:///F:/mworkk/videosample/reels/paper-walkthrough-ac5486bb.mp4", "size_mb": 0.92}, {"filename": "paper-walkthrough-27387a5e.mp4", "local_path": "F:\\mworkk\\videosample\\reels\\paper-walkthrough-27387a5e.mp4", "file_url": "file:///F:/mworkk/videosample/reels/paper-walkthrough-27387a5e.mp4", "size_mb": 0.9}, {"filename": "attention.mp4", "local_path": "F:\\mworkk\\videosample\\reels\\attention.mp4", "file_url": "file:///F:/mworkk/videosample/reels/attention.mp4", "size_mb": 5.43}], "analyzed_outputs": []}, {"style_id": 26, "title": "Giải thích paper kiểu 3Blue1Brown, công thức dựng theo giọng", "category": "Nội dung thành video diễn giải", "skill": "article-to-video · paper-3b1b", "skill_root": "article-to-video", "description": "Giải thích paper kiểu 3Blue1Brown: nền tối, công thức KaTeX và hình dựng từng nét theo giọng.", "factory": {"id": "escbase", "name": "escbase_template (HTML/DOM 390x693)", "path": "G:\\GRAM\\escbase-template3-83.v4.86\\escbase_template", "badge_cls": "badge-emerald", "also_fits": "E:\\A1A\\backvideo (macro-documentary / news-commentary)"}, "videos": [{"filename": "paper-3b1b-819163d7.mp4", "local_path": "F:\\mworkk\\videosample\\reels\\paper-3b1b-819163d7.mp4", "file_url": "file:///F:/mworkk/videosample/reels/paper-3b1b-819163d7.mp4", "size_mb": 0.75}, {"filename": "paper-3b1b-8cd49970.mp4", "local_path": "F:\\mworkk\\videosample\\reels\\paper-3b1b-8cd49970.mp4", "file_url": "file:///F:/mworkk/videosample/reels/paper-3b1b-8cd49970.mp4", "size_mb": 0.71}, {"filename": "resnet.mp4", "local_path": "F:\\mworkk\\videosample\\reels\\resnet.mp4", "file_url": "file:///F:/mworkk/videosample/reels/resnet.mp4", "size_mb": 6.09}], "analyzed_outputs": []}, {"style_id": 27, "title": "Phim tranh khắc cổ cho triết học, lịch sử", "category": "Nội dung thành video diễn giải", "skill": "article-to-video · engraved-plate", "skill_root": "article-to-video", "description": "Phim 2–3 phút về triết học, lịch sử bằng tranh khắc thép cổ, con dấu đỏ và phụ đề karaoke.", "factory": {"id": "escbase", "name": "escbase_template (HTML/DOM 390x693)", "path": "G:\\GRAM\\escbase-template3-83.v4.86\\escbase_template", "badge_cls": "badge-emerald", "also_fits": "E:\\A1A\\backvideo (macro-documentary / news-commentary)"}, "videos": [{"filename": "engraved-plate-896ad914.mp4", "local_path": "F:\\mworkk\\videosample\\reels\\engraved-plate-896ad914.mp4", "file_url": "file:///F:/mworkk/videosample/reels/engraved-plate-896ad914.mp4", "size_mb": 3.59}, {"filename": "engraved-plate-3e4939ae.mp4", "local_path": "F:\\mworkk\\videosample\\reels\\engraved-plate-3e4939ae.mp4", "file_url": "file:///F:/mworkk/videosample/reels/engraved-plate-3e4939ae.mp4", "size_mb": 2.98}, {"filename": "theseus.mp4", "local_path": "F:\\mworkk\\videosample\\reels\\theseus.mp4", "file_url": "file:///F:/mworkk/videosample/reels/theseus.mp4", "size_mb": 17.55}], "analyzed_outputs": []}, {"style_id": 28, "title": "Phóng sự cắt dán giấy kiểu Vox", "category": "Nội dung thành video diễn giải", "skill": "article-to-video · vox-collage", "skill_root": "article-to-video", "description": "Phóng sự cắt dán giấy kiểu Vox: ảnh bán sắc, nhãn giấy xé, dây đỏ ghim, mỗi cảnh tự ghép theo lời.", "factory": {"id": "escbase", "name": "escbase_template (HTML/DOM 390x693)", "path": "G:\\GRAM\\escbase-template3-83.v4.86\\escbase_template", "badge_cls": "badge-emerald", "also_fits": "E:\\A1A\\backvideo (macro-documentary / news-commentary)"}, "videos": [{"filename": "vox-collage-dd386ea6.mp4", "local_path": "F:\\mworkk\\videosample\\reels\\vox-collage-dd386ea6.mp4", "file_url": "file:///F:/mworkk/videosample/reels/vox-collage-dd386ea6.mp4", "size_mb": 2.43}, {"filename": "rosetta.mp4", "local_path": "F:\\mworkk\\videosample\\reels\\rosetta.mp4", "file_url": "file:///F:/mworkk/videosample/reels/rosetta.mp4", "size_mb": 21.93}], "analyzed_outputs": []}, {"style_id": 29, "title": "Phim tài liệu tư liệu 8–10 phút", "category": "Nội dung thành video diễn giải", "skill": "article-to-video · archival-documentary", "skill_root": "article-to-video", "description": "Phim tài liệu 8–10 phút từ nguồn thật: ảnh lưu trữ có bản quyền, trang báo, mốc thời gian đánh máy.", "factory": {"id": "escbase", "name": "escbase_template (HTML/DOM 390x693)", "path": "G:\\GRAM\\escbase-template3-83.v4.86\\escbase_template", "badge_cls": "badge-emerald", "also_fits": "E:\\A1A\\backvideo (macro-documentary / news-commentary)"}, "videos": [{"filename": "archival-documentary-4674e6a6.mp4", "local_path": "F:\\mworkk\\videosample\\reels\\archival-documentary-4674e6a6.mp4", "file_url": "file:///F:/mworkk/videosample/reels/archival-documentary-4674e6a6.mp4", "size_mb": 2.16}, {"filename": "archival-documentary-910e5645.mp4", "local_path": "F:\\mworkk\\videosample\\reels\\archival-documentary-910e5645.mp4", "file_url": "file:///F:/mworkk/videosample/reels/archival-documentary-910e5645.mp4", "size_mb": 2.28}, {"filename": "internet-vietnam.mp4", "local_path": "F:\\mworkk\\videosample\\reels\\internet-vietnam.mp4", "file_url": "file:///F:/mworkk/videosample/reels/internet-vietnam.mp4", "size_mb": 27.3}], "analyzed_outputs": []}, {"style_id": 30, "title": "Tin nóng bằng ảnh báo, giọng nữ bản tin", "category": "Nội dung thành video diễn giải", "skill": "article-to-video · news-photo", "skill_root": "article-to-video", "description": "Tin nóng 40–55 s bằng ảnh báo: kịch bản 6–8 câu, giọng nữ bản tin, tiêu đề cố định và phụ đề 3 chữ.", "factory": {"id": "escbase", "name": "escbase_template (HTML/DOM 390x693)", "path": "G:\\GRAM\\escbase-template3-83.v4.86\\escbase_template", "badge_cls": "badge-emerald", "also_fits": "E:\\A1A\\backvideo (macro-documentary / news-commentary)"}, "videos": [{"filename": "news-photo-8072b078.mp4", "local_path": "F:\\mworkk\\videosample\\reels\\news-photo-8072b078.mp4", "file_url": "file:///F:/mworkk/videosample/reels/news-photo-8072b078.mp4", "size_mb": 1.44}, {"filename": "roman-news.mp4", "local_path": "F:\\mworkk\\videosample\\reels\\roman-news.mp4", "file_url": "file:///F:/mworkk/videosample/reels/roman-news.mp4", "size_mb": 3.93}], "analyzed_outputs": []}, {"style_id": 31, "title": "Luyện nghe tiếng Anh: reader, vocab, guess, joke", "category": "Nội dung thành video diễn giải", "skill": "elearning · listening", "skill_root": "elearning", "description": "Luyện nghe tiếng Anh cho người Việt: đọc truyện, học từ vựng, đoán từ hoặc truyện cười, có song ngữ.", "factory": {"id": "escbase", "name": "escbase_template (HTML/DOM 390x693)", "path": "G:\\GRAM\\escbase-template3-83.v4.86\\escbase_template", "badge_cls": "badge-emerald", "also_fits": "E:\\A1A\\backvideo (english-learning-split-subtitles)"}, "videos": [{"filename": "listening-1bfd0778.mp4", "local_path": "F:\\mworkk\\videosample\\reels\\listening-1bfd0778.mp4", "file_url": "file:///F:/mworkk/videosample/reels/listening-1bfd0778.mp4", "size_mb": 0.69}, {"filename": "listening-067c51db.mp4", "local_path": "F:\\mworkk\\videosample\\reels\\listening-067c51db.mp4", "file_url": "file:///F:/mworkk/videosample/reels/listening-067c51db.mp4", "size_mb": 0.52}, {"filename": "listening-a320eaab.mp4", "local_path": "F:\\mworkk\\videosample\\reels\\listening-a320eaab.mp4", "file_url": "file:///F:/mworkk/videosample/reels/listening-a320eaab.mp4", "size_mb": 0.29}, {"filename": "a-small-step.mp4", "local_path": "F:\\mworkk\\videosample\\reels\\a-small-step.mp4", "file_url": "file:///F:/mworkk/videosample/reels/a-small-step.mp4", "size_mb": 1.65}], "analyzed_outputs": []}, {"style_id": 32, "title": "Bài giảng hoạt hình vẽ tay 3–4 phút từ bài nói", "category": "Nội dung thành video diễn giải", "skill": "elearning · hand-drawn-lesson", "skill_root": "elearning", "description": "Biến một bài nói thành bài giảng hoạt hình vẽ tay 3–4 phút: ý chính, giải thích, ví dụ, phụ đề.", "factory": {"id": "escbase", "name": "escbase_template (HTML/DOM 390x693)", "path": "G:\\GRAM\\escbase-template3-83.v4.86\\escbase_template", "badge_cls": "badge-emerald", "also_fits": "E:\\A1A\\backvideo (english-learning-split-subtitles)"}, "videos": [{"filename": "hand-drawn-lesson-aa9db0dc.mp4", "local_path": "F:\\mworkk\\videosample\\reels\\hand-drawn-lesson-aa9db0dc.mp4", "file_url": "file:///F:/mworkk/videosample/reels/hand-drawn-lesson-aa9db0dc.mp4", "size_mb": 2.2}, {"filename": "hand-drawn-lesson-bc13ae1d.mp4", "local_path": "F:\\mworkk\\videosample\\reels\\hand-drawn-lesson-bc13ae1d.mp4", "file_url": "file:///F:/mworkk/videosample/reels/hand-drawn-lesson-bc13ae1d.mp4", "size_mb": 1.77}, {"filename": "sky-blue.mp4", "local_path": "F:\\mworkk\\videosample\\reels\\sky-blue.mp4", "file_url": "file:///F:/mworkk/videosample/reels/sky-blue.mp4", "size_mb": 10.39}], "analyzed_outputs": []}, {"style_id": 33, "title": "Một cài đặt Excel, con trỏ bấm qua từng giá trị", "category": "Nội dung thành video diễn giải", "skill": "elearning · excel-setting", "skill_root": "elearning", "description": "Một cài đặt Excel (định dạng số, ngày…) diễn ra trên bảng tính thật, con trỏ bấm qua từng giá trị.", "factory": {"id": "escbase", "name": "escbase_template (HTML/DOM 390x693)", "path": "G:\\GRAM\\escbase-template3-83.v4.86\\escbase_template", "badge_cls": "badge-emerald", "also_fits": "E:\\A1A\\backvideo (english-learning-split-subtitles)"}, "videos": [{"filename": "excel-setting-c9bc9482.mp4", "local_path": "F:\\mworkk\\videosample\\reels\\excel-setting-c9bc9482.mp4", "file_url": "file:///F:/mworkk/videosample/reels/excel-setting-c9bc9482.mp4", "size_mb": 0.35}, {"filename": "excel-setting-78ac3846.mp4", "local_path": "F:\\mworkk\\videosample\\reels\\excel-setting-78ac3846.mp4", "file_url": "file:///F:/mworkk/videosample/reels/excel-setting-78ac3846.mp4", "size_mb": 0.32}], "analyzed_outputs": []}, {"style_id": 34, "title": "Ra mắt app: câu hỏi + demo trên laptop 3D", "category": "Giới thiệu sản phẩm, dịch vụ", "skill": "app-promo · app-launch-studio", "skill_root": "app-promo", "description": "Ra mắt app 16:9: một câu hỏi mở đầu rồi demo chạy trên laptop 3D trong studio tối.", "factory": {"id": "backvideo", "name": "backvideo (Remotion Master Studio)", "path": "E:\\A1A\\backvideo", "badge_cls": "badge-purple", "also_fits": "escbase_template (media-first-frame)"}, "videos": [{"filename": "app-launch-studio-c74dd491.mp4", "local_path": "F:\\mworkk\\videosample\\reels\\app-launch-studio-c74dd491.mp4", "file_url": "file:///F:/mworkk/videosample/reels/app-launch-studio-c74dd491.mp4", "size_mb": 1.37}, {"filename": "app-launch-studio-7146e88a.mp4", "local_path": "F:\\mworkk\\videosample\\reels\\app-launch-studio-7146e88a.mp4", "file_url": "file:///F:/mworkk/videosample/reels/app-launch-studio-7146e88a.mp4", "size_mb": 1.35}, {"filename": "gop-gio.mp4", "local_path": "F:\\mworkk\\videosample\\reels\\gop-gio.mp4", "file_url": "file:///F:/mworkk/videosample/reels/gop-gio.mp4", "size_mb": 4.81}], "analyzed_outputs": []}, {"style_id": 35, "title": "Ra mắt kiểu keynote, thẻ kính mờ nền chàm", "category": "Giới thiệu sản phẩm, dịch vụ", "skill": "app-promo · keynote-launch", "skill_root": "app-promo", "description": "Ra mắt sản phẩm kiểu keynote: thẻ kính mờ trên nền chàm, nhịp chậm và sang.", "factory": {"id": "backvideo", "name": "backvideo (Remotion Master Studio)", "path": "E:\\A1A\\backvideo", "badge_cls": "badge-purple", "also_fits": "escbase_template (media-first-frame)"}, "videos": [{"filename": "keynote-launch-a63a0c53.mp4", "local_path": "F:\\mworkk\\videosample\\reels\\keynote-launch-a63a0c53.mp4", "file_url": "file:///F:/mworkk/videosample/reels/keynote-launch-a63a0c53.mp4", "size_mb": 1.05}, {"filename": "keynote-launch-5d0dd201.mp4", "local_path": "F:\\mworkk\\videosample\\reels\\keynote-launch-5d0dd201.mp4", "file_url": "file:///F:/mworkk/videosample/reels/keynote-launch-5d0dd201.mp4", "size_mb": 1.3}], "analyzed_outputs": []}, {"style_id": 36, "title": "Ra mắt website, theme kiểu tạp chí nội thất", "category": "Giới thiệu sản phẩm, dịch vụ", "skill": "app-promo · site-launch", "skill_root": "app-promo", "description": "Ra mắt website hay theme kiểu tạp chí nội thất: trang thật lướt qua, chữ serif, nhịp nhẹ.", "factory": {"id": "backvideo", "name": "backvideo (Remotion Master Studio)", "path": "E:\\A1A\\backvideo", "badge_cls": "badge-purple", "also_fits": "escbase_template (media-first-frame)"}, "videos": [{"filename": "site-launch-2ce4b0e0.mp4", "local_path": "F:\\mworkk\\videosample\\reels\\site-launch-2ce4b0e0.mp4", "file_url": "file:///F:/mworkk/videosample/reels/site-launch-2ce4b0e0.mp4", "size_mb": 1.51}, {"filename": "site-launch-6f1a7e6b.mp4", "local_path": "F:\\mworkk\\videosample\\reels\\site-launch-6f1a7e6b.mp4", "file_url": "file:///F:/mworkk/videosample/reels/site-launch-6f1a7e6b.mp4", "size_mb": 1.55}], "analyzed_outputs": []}, {"style_id": 37, "title": "Quảng cáo dải sản phẩm của shop theo nhịp nhạc", "category": "Giới thiệu sản phẩm, dịch vụ", "skill": "product-video · product-promo", "skill_root": "product-video", "description": "Quảng cáo cả dải sản phẩm của shop theo nhịp nhạc, giá và tên hiện đúng beat, nhiều phong cách.", "factory": {"id": "backvideo", "name": "backvideo (Remotion Master Studio)", "path": "E:\\A1A\\backvideo", "badge_cls": "badge-purple", "also_fits": "E:\\A1A\\flowtop (tiktok_perfume_reveal / product)"}, "videos": [{"filename": "product-promo-effca870.mp4", "local_path": "F:\\mworkk\\videosample\\reels\\product-promo-effca870.mp4", "file_url": "file:///F:/mworkk/videosample/reels/product-promo-effca870.mp4", "size_mb": 0.67}, {"filename": "product-promo-13966fc0.mp4", "local_path": "F:\\mworkk\\videosample\\reels\\product-promo-13966fc0.mp4", "file_url": "file:///F:/mworkk/videosample/reels/product-promo-13966fc0.mp4", "size_mb": 0.79}, {"filename": "product-promo-ecec6ea0.mp4", "local_path": "F:\\mworkk\\videosample\\reels\\product-promo-ecec6ea0.mp4", "file_url": "file:///F:/mworkk/videosample/reels/product-promo-ecec6ea0.mp4", "size_mb": 0.76}], "analyzed_outputs": []}, {"style_id": 38, "title": "Bán nông sản, đặc sản từ ảnh điện thoại", "category": "Giới thiệu sản phẩm, dịch vụ", "skill": "product-video · farm-market", "skill_root": "product-video", "description": "Bán nông sản, đặc sản từ ảnh điện thoại của người bán: ấm, mộc, có giá và cách đặt hàng.", "factory": {"id": "backvideo", "name": "backvideo (Remotion Master Studio)", "path": "E:\\A1A\\backvideo", "badge_cls": "badge-purple", "also_fits": "E:\\A1A\\flowtop (tiktok_perfume_reveal / product)"}, "videos": [{"filename": "farm-market-bf5b554f.mp4", "local_path": "F:\\mworkk\\videosample\\reels\\farm-market-bf5b554f.mp4", "file_url": "file:///F:/mworkk/videosample/reels/farm-market-bf5b554f.mp4", "size_mb": 2.12}, {"filename": "farm-market-3b67b345.mp4", "local_path": "F:\\mworkk\\videosample\\reels\\farm-market-3b67b345.mp4", "file_url": "file:///F:/mworkk/videosample/reels/farm-market-3b67b345.mp4", "size_mb": 1.71}, {"filename": "farm-market-27182a57.mp4", "local_path": "F:\\mworkk\\videosample\\reels\\farm-market-27182a57.mp4", "file_url": "file:///F:/mworkk/videosample/reels/farm-market-27182a57.mp4", "size_mb": 1.7}, {"filename": "honey-farm.mp4", "local_path": "F:\\mworkk\\videosample\\reels\\honey-farm.mp4", "file_url": "file:///F:/mworkk/videosample/reels/honey-farm.mp4", "size_mb": 5.66}], "analyzed_outputs": []}, {"style_id": 39, "title": "Ảnh dự án + bản đồ vị trí OSM, tuyến đi, tiện ích", "category": "Giới thiệu sản phẩm, dịch vụ", "skill": "real-estate-promo · location-map", "skill_root": "real-estate-promo", "description": "Ảnh dự án rồi bản đồ OSM nghiêng: khu đất viền sáng, tuyến đi tới tiện ích, vòng bán kính 1 km.", "factory": {"id": "backvideo", "name": "backvideo (Remotion Master Studio)", "path": "E:\\A1A\\backvideo", "badge_cls": "badge-purple", "also_fits": "escbase_template (route/map scenes)"}, "videos": [{"filename": "location-map-6bda0471.mp4", "local_path": "F:\\mworkk\\videosample\\reels\\location-map-6bda0471.mp4", "file_url": "file:///F:/mworkk/videosample/reels/location-map-6bda0471.mp4", "size_mb": 1.87}, {"filename": "location-map-c0502103.mp4", "local_path": "F:\\mworkk\\videosample\\reels\\location-map-c0502103.mp4", "file_url": "file:///F:/mworkk/videosample/reels/location-map-c0502103.mp4", "size_mb": 2.22}, {"filename": "location-map-b155048a.mp4", "local_path": "F:\\mworkk\\videosample\\reels\\location-map-b155048a.mp4", "file_url": "file:///F:/mworkk/videosample/reels/location-map-b155048a.mp4", "size_mb": 2.18}, {"filename": "ho-tay.mp4", "local_path": "F:\\mworkk\\videosample\\reels\\ho-tay.mp4", "file_url": "file:///F:/mworkk/videosample/reels/ho-tay.mp4", "size_mb": 5.16}, {"filename": "metro-2a.mp4", "local_path": "F:\\mworkk\\videosample\\reels\\metro-2a.mp4", "file_url": "file:///F:/mworkk/videosample/reels/metro-2a.mp4", "size_mb": 6.34}], "analyzed_outputs": []}, {"style_id": 40, "title": "Tuyến metro, cao tốc trên bản đồ vệ tinh", "category": "Giới thiệu sản phẩm, dịch vụ", "skill": "real-estate-promo · infra-route", "skill_root": "real-estate-promo", "description": "Tuyến metro, cao tốc chạy trên ảnh vệ tinh, từng ga, từng nút giao hiện ra theo lời.", "factory": {"id": "backvideo", "name": "backvideo (Remotion Master Studio)", "path": "E:\\A1A\\backvideo", "badge_cls": "badge-purple", "also_fits": "escbase_template (route/map scenes)"}, "videos": [{"filename": "infra-route-a31e1e02.mp4", "local_path": "F:\\mworkk\\videosample\\reels\\infra-route-a31e1e02.mp4", "file_url": "file:///F:/mworkk/videosample/reels/infra-route-a31e1e02.mp4", "size_mb": 12.75}, {"filename": "infra-route-be54af58.mp4", "local_path": "F:\\mworkk\\videosample\\reels\\infra-route-be54af58.mp4", "file_url": "file:///F:/mworkk/videosample/reels/infra-route-be54af58.mp4", "size_mb": 7.57}], "analyzed_outputs": []}, {"style_id": 41, "title": "Căn hộ + một chuyến đi tới điểm đến trên bản đồ", "category": "Giới thiệu sản phẩm, dịch vụ", "skill": "real-estate-promo · trip-listing", "skill_root": "real-estate-promo", "description": "Một căn hộ kèm một chuyến đi thật: đi bộ ra ga, đi tàu từng ga, tổng thời gian tới điểm đến.", "factory": {"id": "backvideo", "name": "backvideo (Remotion Master Studio)", "path": "E:\\A1A\\backvideo", "badge_cls": "badge-purple", "also_fits": "escbase_template (route/map scenes)"}, "videos": [{"filename": "trip-listing-51e8581e.mp4", "local_path": "F:\\mworkk\\videosample\\reels\\trip-listing-51e8581e.mp4", "file_url": "file:///F:/mworkk/videosample/reels/trip-listing-51e8581e.mp4", "size_mb": 6.29}], "analyzed_outputs": []}, {"style_id": 42, "title": "Clip môi giới, ảnh dự án hiện đúng từ được nói (Basic / Pro có bản đồ)", "category": "Giới thiệu sản phẩm, dịch vụ", "skill": "real-estate-promo · sales-short", "skill_root": "real-estate-promo", "description": "Clip môi giới tự quay, ảnh dự án hiện đúng lúc từ đó được nói (bản Pro có thêm bản đồ).", "factory": {"id": "backvideo", "name": "backvideo (Remotion Master Studio)", "path": "E:\\A1A\\backvideo", "badge_cls": "badge-purple", "also_fits": "escbase_template (route/map scenes)"}, "videos": [{"filename": "sales-short-287b0c74.mp4", "local_path": "F:\\mworkk\\videosample\\reels\\sales-short-287b0c74.mp4", "file_url": "file:///F:/mworkk/videosample/reels/sales-short-287b0c74.mp4", "size_mb": 4.73}, {"filename": "sales-short-658d9004.mp4", "local_path": "F:\\mworkk\\videosample\\reels\\sales-short-658d9004.mp4", "file_url": "file:///F:/mworkk/videosample/reels/sales-short-658d9004.mp4", "size_mb": 4.92}], "analyzed_outputs": []}, {"style_id": 43, "title": "Giới thiệu full dự án từ clip môi giới, 6 nhịp", "category": "Giới thiệu sản phẩm, dịch vụ", "skill": "real-estate-promo · project-tour", "skill_root": "real-estate-promo", "description": "Giới thiệu trọn dự án từ clip môi giới theo 6 nhịp: vị trí, tiện ích, căn mẫu, giá, pháp lý, kêu gọi.", "factory": {"id": "backvideo", "name": "backvideo (Remotion Master Studio)", "path": "E:\\A1A\\backvideo", "badge_cls": "badge-purple", "also_fits": "escbase_template (route/map scenes)"}, "videos": [{"filename": "project-tour-5bf960c8.mp4", "local_path": "F:\\mworkk\\videosample\\reels\\project-tour-5bf960c8.mp4", "file_url": "file:///F:/mworkk/videosample/reels/project-tour-5bf960c8.mp4", "size_mb": 4.37}], "analyzed_outputs": []}, {"style_id": 44, "title": "Showreel giới thiệu cá nhân từ website của họ", "category": "Motion quảng cáo, hook", "skill": "brand-intro · profile-showreel", "skill_root": "brand-intro", "description": "Showreel giới thiệu một founder, diễn giả hay chuyên gia, lấy nội dung từ chính website của họ.", "factory": {"id": "backvideo", "name": "backvideo (Remotion personal-brand)", "path": "E:\\A1A\\backvideo", "badge_cls": "badge-purple", "also_fits": "escbase_template (avatar-person-hero)"}, "videos": [{"filename": "profile-showreel-d406ffe0.mp4", "local_path": "F:\\mworkk\\videosample\\reels\\profile-showreel-d406ffe0.mp4", "file_url": "file:///F:/mworkk/videosample/reels/profile-showreel-d406ffe0.mp4", "size_mb": 1.85}, {"filename": "profile-showreel-c6e7a842.mp4", "local_path": "F:\\mworkk\\videosample\\reels\\profile-showreel-c6e7a842.mp4", "file_url": "file:///F:/mworkk/videosample/reels/profile-showreel-c6e7a842.mp4", "size_mb": 1.94}, {"filename": "profile-showreel-0c28df2d.mp4", "local_path": "F:\\mworkk\\videosample\\reels\\profile-showreel-0c28df2d.mp4", "file_url": "file:///F:/mworkk/videosample/reels/profile-showreel-0c28df2d.mp4", "size_mb": 1.93}, {"filename": "showreel-ho-so.mp4", "local_path": "F:\\mworkk\\videosample\\reels\\showreel-ho-so.mp4", "file_url": "file:///F:/mworkk/videosample/reels/showreel-ho-so.mp4", "size_mb": 8.13}], "analyzed_outputs": []}, {"style_id": 45, "title": "Phim chữ động theo giọng đọc, mỗi cụm một nhịp", "category": "Motion quảng cáo, hook", "skill": "motion-graphics · voice-kinetic", "skill_root": "motion-graphics", "description": "Phim chữ động theo giọng đọc: mỗi cụm ý một nhịp, chữ đập đúng từ, hợp quảng cáo dịch vụ.", "factory": {"id": "backvideo", "name": "backvideo (Remotion Kinetic Studio)", "path": "E:\\A1A\\backvideo", "badge_cls": "badge-purple", "also_fits": "escbase_template (kinetic reveal)"}, "videos": [{"filename": "voice-kinetic-f9022b73.mp4", "local_path": "F:\\mworkk\\videosample\\reels\\voice-kinetic-f9022b73.mp4", "file_url": "file:///F:/mworkk/videosample/reels/voice-kinetic-f9022b73.mp4", "size_mb": 2.53}, {"filename": "voice-kinetic-d1c7d5a7.mp4", "local_path": "F:\\mworkk\\videosample\\reels\\voice-kinetic-d1c7d5a7.mp4", "file_url": "file:///F:/mworkk/videosample/reels/voice-kinetic-d1c7d5a7.mp4", "size_mb": 1.31}, {"filename": "voice-kinetic-91addfe0.mp4", "local_path": "F:\\mworkk\\videosample\\reels\\voice-kinetic-91addfe0.mp4", "file_url": "file:///F:/mworkk/videosample/reels/voice-kinetic-91addfe0.mp4", "size_mb": 2.48}, {"filename": "mot-trang-moi-toi.mp4", "local_path": "F:\\mworkk\\videosample\\reels\\mot-trang-moi-toi.mp4", "file_url": "file:///F:/mworkk/videosample/reels/mot-trang-moi-toi.mp4", "size_mb": 5.49}], "analyzed_outputs": []}, {"style_id": 46, "title": "Bộ hiệu ứng motion phủ lên video có sẵn", "category": "Motion quảng cáo, hook", "skill": "motion-graphics · motion-fx-kit", "skill_root": "motion-graphics", "description": "Phủ hiệu ứng lên video có sẵn: thẻ chữ, chữ sau lưng người nói, glitch, chia màn hình, karaoke.", "factory": {"id": "backvideo", "name": "backvideo (Remotion Kinetic Studio)", "path": "E:\\A1A\\backvideo", "badge_cls": "badge-purple", "also_fits": "escbase_template (kinetic reveal)"}, "videos": [{"filename": "motion-fx-kit-bb04d0cb.mp4", "local_path": "F:\\mworkk\\videosample\\reels\\motion-fx-kit-bb04d0cb.mp4", "file_url": "file:///F:/mworkk/videosample/reels/motion-fx-kit-bb04d0cb.mp4", "size_mb": 2.31}], "analyzed_outputs": []}, {"style_id": 47, "title": "Quảng cáo truyện tranh sôi động, starburst trên drop", "category": "Motion quảng cáo, hook", "skill": "video-ads · comic-hype", "skill_root": "video-ads", "description": "Quảng cáo truyện tranh sôi động: starburst, khung truyện, chữ to bùng lên đúng drop của nhạc.", "factory": {"id": "backvideo", "name": "backvideo (Remotion Ads Studio)", "path": "E:\\A1A\\backvideo", "badge_cls": "badge-purple", "also_fits": "E:\\A1A\\flowtop (1-Touch Ad Templates)"}, "videos": [{"filename": "comic-hype-89c8c3e7.mp4", "local_path": "F:\\mworkk\\videosample\\reels\\comic-hype-89c8c3e7.mp4", "file_url": "file:///F:/mworkk/videosample/reels/comic-hype-89c8c3e7.mp4", "size_mb": 2.66}, {"filename": "comic-hype-a54e5e2c.mp4", "local_path": "F:\\mworkk\\videosample\\reels\\comic-hype-a54e5e2c.mp4", "file_url": "file:///F:/mworkk/videosample/reels/comic-hype-a54e5e2c.mp4", "size_mb": 2.46}, {"filename": "comic-hype-e5ddc95c.mp4", "local_path": "F:\\mworkk\\videosample\\reels\\comic-hype-e5ddc95c.mp4", "file_url": "file:///F:/mworkk/videosample/reels/comic-hype-e5ddc95c.mp4", "size_mb": 2.42}, {"filename": "pantry-hype.mp4", "local_path": "F:\\mworkk\\videosample\\reels\\pantry-hype.mp4", "file_url": "file:///F:/mworkk/videosample/reels/pantry-hype.mp4", "size_mb": 10.4}], "analyzed_outputs": []}, {"style_id": 48, "title": "Quảng cáo khoá học, webinar dạng phiếu việc", "category": "Motion quảng cáo, hook", "skill": "video-ads · course-ad", "skill_root": "video-ads", "description": "Quảng cáo khoá học hay webinar dạng phiếu công việc: vấn đề, lịch học, lợi ích, nút đăng ký.", "factory": {"id": "backvideo", "name": "backvideo (Remotion Ads Studio)", "path": "E:\\A1A\\backvideo", "badge_cls": "badge-purple", "also_fits": "E:\\A1A\\flowtop (1-Touch Ad Templates)"}, "videos": [{"filename": "course-ad-69fde0b9.mp4", "local_path": "F:\\mworkk\\videosample\\reels\\course-ad-69fde0b9.mp4", "file_url": "file:///F:/mworkk/videosample/reels/course-ad-69fde0b9.mp4", "size_mb": 1.38}, {"filename": "course-ad-2232c0d9.mp4", "local_path": "F:\\mworkk\\videosample\\reels\\course-ad-2232c0d9.mp4", "file_url": "file:///F:/mworkk/videosample/reels/course-ad-2232c0d9.mp4", "size_mb": 1.48}], "analyzed_outputs": []}, {"style_id": 49, "title": "Phụ đề karaoke từng chữ", "category": "Người nói, quay thực tế", "skill": "subtitles-captions · karaoke", "skill_root": "subtitles-captions", "description": "Phụ đề karaoke: từng chữ sáng lên đúng lúc được nói, có sửa thuật ngữ.", "factory": {"id": "flowtop", "name": "flowtop (ASS Auto-Captions + Vclip TTS)", "path": "E:\\A1A\\flowtop", "badge_cls": "badge-cyan", "also_fits": "E:\\A1A\\backvideo (KineticSubtitle.tsx)"}, "videos": [{"filename": "karaoke-1e6a2406.mp4", "local_path": "F:\\mworkk\\videosample\\reels\\karaoke-1e6a2406.mp4", "file_url": "file:///F:/mworkk/videosample/reels/karaoke-1e6a2406.mp4", "size_mb": 2.77}, {"filename": "karaoke-captions.mp4", "local_path": "F:\\mworkk\\videosample\\reels\\karaoke-captions.mp4", "file_url": "file:///F:/mworkk/videosample/reels/karaoke-captions.mp4", "size_mb": 10.5}], "analyzed_outputs": []}, {"style_id": 50, "title": "File phụ đề SRT", "category": "Người nói, quay thực tế", "skill": "subtitles-captions · srt", "skill_root": "subtitles-captions", "description": "Xuất file phụ đề SRT chuẩn thời gian từ video, tiếng Việt hoặc tiếng Anh, để đăng YouTube, Facebook.", "factory": {"id": "flowtop", "name": "flowtop (ASS Auto-Captions + Vclip TTS)", "path": "E:\\A1A\\flowtop", "badge_cls": "badge-cyan", "also_fits": "E:\\A1A\\backvideo (KineticSubtitle.tsx)"}, "videos": [{"filename": "srt-cf7c9bc0.mp4", "local_path": "F:\\mworkk\\videosample\\reels\\srt-cf7c9bc0.mp4", "file_url": "file:///F:/mworkk/videosample/reels/srt-cf7c9bc0.mp4", "size_mb": 2.57}], "analyzed_outputs": []}, {"style_id": 51, "title": "Phụ đề theo cụm, 2 dòng cân", "category": "Người nói, quay thực tế", "skill": "subtitles-captions · phrase", "skill_root": "subtitles-captions", "description": "Phụ đề theo cụm, 2 dòng cân, dễ đọc trên điện thoại.", "factory": {"id": "flowtop", "name": "flowtop (ASS Auto-Captions + Vclip TTS)", "path": "E:\\A1A\\flowtop", "badge_cls": "badge-cyan", "also_fits": "E:\\A1A\\backvideo (KineticSubtitle.tsx)"}, "videos": [{"filename": "phrase-8c7ecf1d.mp4", "local_path": "F:\\mworkk\\videosample\\reels\\phrase-8c7ecf1d.mp4", "file_url": "file:///F:/mworkk/videosample/reels/phrase-8c7ecf1d.mp4", "size_mb": 3.16}], "analyzed_outputs": []}, {"style_id": 52, "title": "Short nổi bật có thiết kế motion-fx", "category": "Người nói, quay thực tế", "skill": "talking-head · highlight", "skill_root": "talking-head", "description": "Short nổi bật từ clip người nói: cắt đoạn đắt, khung bám mặt, thẻ chữ và hiệu ứng motion.", "factory": {"id": "flowtop", "name": "flowtop (Omni V2V + Talking-Head Studio)", "path": "E:\\A1A\\flowtop", "badge_cls": "badge-cyan", "also_fits": "E:\\A1A\\backvideo (personal-brand / podcast-quotes)"}, "videos": [{"filename": "highlight-b694e07e.mp4", "local_path": "F:\\mworkk\\videosample\\reels\\highlight-b694e07e.mp4", "file_url": "file:///F:/mworkk/videosample/reels/highlight-b694e07e.mp4", "size_mb": 1.4}, {"filename": "highlight-8dd7cd16.mp4", "local_path": "F:\\mworkk\\videosample\\reels\\highlight-8dd7cd16.mp4", "file_url": "file:///F:/mworkk/videosample/reels/highlight-8dd7cd16.mp4", "size_mb": 1.14}], "analyzed_outputs": []}, {"style_id": 53, "title": "Người nói cắt dán giấy, chữ đập theo từ", "category": "Người nói, quay thực tế", "skill": "talking-head · collage", "skill_root": "talking-head", "description": "Người nói tách nền đặt trên giấy cắt dán, chữ đập theo từ, hợp nội dung kể chuyện, quan điểm.", "factory": {"id": "flowtop", "name": "flowtop (Omni V2V + Talking-Head Studio)", "path": "E:\\A1A\\flowtop", "badge_cls": "badge-cyan", "also_fits": "E:\\A1A\\backvideo (personal-brand / podcast-quotes)"}, "videos": [{"filename": "collage-7796f95f.mp4", "local_path": "F:\\mworkk\\videosample\\reels\\collage-7796f95f.mp4", "file_url": "file:///F:/mworkk/videosample/reels/collage-7796f95f.mp4", "size_mb": 3.48}, {"filename": "collage-404f0af0.mp4", "local_path": "F:\\mworkk\\videosample\\reels\\collage-404f0af0.mp4", "file_url": "file:///F:/mworkk/videosample/reels/collage-404f0af0.mp4", "size_mb": 2.27}, {"filename": "collage-f6a6b569.mp4", "local_path": "F:\\mworkk\\videosample\\reels\\collage-f6a6b569.mp4", "file_url": "file:///F:/mworkk/videosample/reels/collage-f6a6b569.mp4", "size_mb": 1.27}], "analyzed_outputs": []}, {"style_id": 54, "title": "Sơ đồ nét lớn dần cạnh bong bóng mặt", "category": "Người nói, quay thực tế", "skill": "talking-head · diagram", "skill_root": "talking-head", "description": "Sơ đồ nét lớn dần bên cạnh bong bóng mặt người nói, minh hoạ đúng ý đang nói.", "factory": {"id": "flowtop", "name": "flowtop (Omni V2V + Talking-Head Studio)", "path": "E:\\A1A\\flowtop", "badge_cls": "badge-cyan", "also_fits": "E:\\A1A\\backvideo (personal-brand / podcast-quotes)"}, "videos": [{"filename": "diagram-3d872cee.mp4", "local_path": "F:\\mworkk\\videosample\\reels\\diagram-3d872cee.mp4", "file_url": "file:///F:/mworkk/videosample/reels/diagram-3d872cee.mp4", "size_mb": 0.57}, {"filename": "diagram-b853a776.mp4", "local_path": "F:\\mworkk\\videosample\\reels\\diagram-b853a776.mp4", "file_url": "file:///F:/mworkk/videosample/reels/diagram-b853a776.mp4", "size_mb": 0.25}, {"filename": "diagram-44081e47.mp4", "local_path": "F:\\mworkk\\videosample\\reels\\diagram-44081e47.mp4", "file_url": "file:///F:/mworkk/videosample/reels/diagram-44081e47.mp4", "size_mb": 0.57}, {"filename": "talking-head-diagram.mp4", "local_path": "F:\\mworkk\\videosample\\reels\\talking-head-diagram.mp4", "file_url": "file:///F:/mworkk/videosample/reels/talking-head-diagram.mp4", "size_mb": 3.88}], "analyzed_outputs": []}, {"style_id": 55, "title": "Short dựng kỹ: grade, phụ đề hoặc keyword, tiêu đề sau đầu", "category": "Người nói, quay thực tế", "skill": "talking-head · edited-short", "skill_root": "talking-head", "description": "Short dựng kỹ: chỉnh màu, phụ đề hoặc keyword, tiêu đề phía sau đầu, chèn hình minh hoạ.", "factory": {"id": "flowtop", "name": "flowtop (Omni V2V + Talking-Head Studio)", "path": "E:\\A1A\\flowtop", "badge_cls": "badge-cyan", "also_fits": "E:\\A1A\\backvideo (personal-brand / podcast-quotes)"}, "videos": [{"filename": "edited-short-87807e3f.mp4", "local_path": "F:\\mworkk\\videosample\\reels\\edited-short-87807e3f.mp4", "file_url": "file:///F:/mworkk/videosample/reels/edited-short-87807e3f.mp4", "size_mb": 2.36}, {"filename": "edited-short-dbf26bca.mp4", "local_path": "F:\\mworkk\\videosample\\reels\\edited-short-dbf26bca.mp4", "file_url": "file:///F:/mworkk/videosample/reels/edited-short-dbf26bca.mp4", "size_mb": 3.09}], "analyzed_outputs": []}, {"style_id": 56, "title": "Cắt nhanh ậm ừ, khoảng lặng, ra short 9:16", "category": "Người nói, quay thực tế", "skill": "video-editing · fast-cut", "skill_root": "video-editing", "description": "Cắt nhanh chỉ bằng ffmpeg: bỏ ậm ừ, khoảng lặng, câu nói lại, ra một short 9:16 sạch.", "factory": {"id": "flowtop", "name": "flowtop (FFmpeg Fast-Cut & Subtitles)", "path": "E:\\A1A\\flowtop", "badge_cls": "badge-cyan", "also_fits": "E:\\A1A\\backvideo"}, "videos": [{"filename": "fast-cut-a345e274.mp4", "local_path": "F:\\mworkk\\videosample\\reels\\fast-cut-a345e274.mp4", "file_url": "file:///F:/mworkk/videosample/reels/fast-cut-a345e274.mp4", "size_mb": 2.26}, {"filename": "fast-cut-2e5e6829.mp4", "local_path": "F:\\mworkk\\videosample\\reels\\fast-cut-2e5e6829.mp4", "file_url": "file:///F:/mworkk/videosample/reels/fast-cut-2e5e6829.mp4", "size_mb": 4.46}], "analyzed_outputs": []}, {"style_id": 57, "title": "Bản dài sạch giữ khung gốc + SRT", "category": "Người nói, quay thực tế", "skill": "video-editing · long-clean", "skill_root": "video-editing", "description": "Bản dài sạch giữ nguyên khung gốc: bỏ khoảng lặng và từ đệm, kèm file SRT.", "factory": {"id": "flowtop", "name": "flowtop (FFmpeg Fast-Cut & Subtitles)", "path": "E:\\A1A\\flowtop", "badge_cls": "badge-cyan", "also_fits": "E:\\A1A\\backvideo"}, "videos": [{"filename": "long-clean-bb5945e7.mp4", "local_path": "F:\\mworkk\\videosample\\reels\\long-clean-bb5945e7.mp4", "file_url": "file:///F:/mworkk/videosample/reels/long-clean-bb5945e7.mp4", "size_mb": 4.5}, {"filename": "long-clean-ai.mp4", "local_path": "F:\\mworkk\\videosample\\reels\\long-clean-ai.mp4", "file_url": "file:///F:/mworkk/videosample/reels/long-clean-ai.mp4", "size_mb": 9.85}], "analyzed_outputs": []}, {"style_id": 58, "title": "Bài giảng sơ đồ giấy kem dựng theo lời + bong bóng mặt", "category": "Bài giảng, sự kiện dài", "skill": "lecture-video · slide-diagram", "skill_root": "lecture-video", "description": "Bài giảng với sơ đồ giấy kem dựng theo lời giảng, bong bóng mặt người giảng ở góc.", "factory": {"id": "flowtop", "name": "flowtop (Storyboard + Slide PiP)", "path": "E:\\A1A\\flowtop", "badge_cls": "badge-cyan", "also_fits": "escbase_template"}, "videos": [{"filename": "slide-diagram-1af52361.mp4", "local_path": "F:\\mworkk\\videosample\\reels\\slide-diagram-1af52361.mp4", "file_url": "file:///F:/mworkk/videosample/reels/slide-diagram-1af52361.mp4", "size_mb": 1.35}], "analyzed_outputs": []}, {"style_id": 59, "title": "Sơ đồ giấy kem", "category": "Bài giảng, sự kiện dài", "skill": "lecture-video · paper", "skill_root": "lecture-video", "description": "Một bài nói trước máy quay thành video 16:9 dài có chương và short 9:16, sơ đồ nét vẽ hiện đúng chữ người nói, theo look sơ đồ giấy kem: bài học điềm tĩnh, lời khuyên, chủ đề chưa rõ hợp look nào.", "factory": {"id": "flowtop", "name": "flowtop (Storyboard + Slide PiP)", "path": "E:\\A1A\\flowtop", "badge_cls": "badge-cyan", "also_fits": "escbase_template"}, "videos": [{"filename": "lecture-ai.mp4", "local_path": "F:\\mworkk\\videosample\\reels\\lecture-ai.mp4", "file_url": "file:///F:/mworkk/videosample/reels/lecture-ai.mp4", "size_mb": 3.05}], "analyzed_outputs": []}, {"style_id": 60, "title": "Nhiều short từ một bản ghi dài", "category": "Bài giảng, sự kiện dài", "skill": "video-repurposing · highlight-short", "skill_root": "video-repurposing", "description": "Từ một bản ghi dài, lấy ra nhiều short highlight, mỗi short một ý trọn vẹn.", "factory": {"id": "flowtop", "name": "flowtop (Short Highlight & Scheduler)", "path": "E:\\A1A\\flowtop", "badge_cls": "badge-cyan", "also_fits": "E:\\A1A\\backvideo"}, "videos": [{"filename": "highlight-short-9a374c42.mp4", "local_path": "F:\\mworkk\\videosample\\reels\\highlight-short-9a374c42.mp4", "file_url": "file:///F:/mworkk/videosample/reels/highlight-short-9a374c42.mp4", "size_mb": 2.43}, {"filename": "short-ai.mp4", "local_path": "F:\\mworkk\\videosample\\reels\\short-ai.mp4", "file_url": "file:///F:/mworkk/videosample/reels/short-ai.mp4", "size_mb": 6.02}], "analyzed_outputs": []}, {"style_id": 61, "title": "Bản ghi share màn hình thành bản dài có chương + short + recap", "category": "Bài giảng, sự kiện dài", "skill": "video-repurposing · screen-share", "skill_root": "video-repurposing", "description": "Bản ghi Zoom/Meet share màn hình thành cả bộ: bản dài có chương, short dọc, bài tóm tắt.", "factory": {"id": "flowtop", "name": "flowtop (Short Highlight & Scheduler)", "path": "E:\\A1A\\flowtop", "badge_cls": "badge-cyan", "also_fits": "E:\\A1A\\backvideo"}, "videos": [{"filename": "screen-share-ddf04497.mp4", "local_path": "F:\\mworkk\\videosample\\reels\\screen-share-ddf04497.mp4", "file_url": "file:///F:/mworkk/videosample/reels/screen-share-ddf04497.mp4", "size_mb": 1.06}], "analyzed_outputs": []}], "analyzed": [{"schema": "mreavideo.handoff.v1", "video_name": "IMG_3089", "output_dir": "F:\\Mcode\\mreavideo\\outputs\\IMG_3089", "source": {"filename": "IMG_3089.MP4", "resolution": "720x1280", "aspect_ratio": "9:16", "fps": 23.898, "duration_s": 7.867}, "reelcrew_catalog_match": null, "production_verdict": "AI-generated video 100%; audio: voice", "confidence": 0.829, "global_palette_hex": ["#061014"], "audio_summary": {"tempo_bpm": null, "rms_dbfs": -16.9, "total_sfx_hits": 0, "distinct_sfx_groups": 0, "clean_reusable_sfx_count": 0}, "packaging_summary": {"subtitle_cues_count": 1, "sfx_anchored_to_text": []}, "artifacts": {"vocals_wav": "F:\\Mcode\\mreavideo\\outputs\\IMG_3089\\stems\\vocals.wav", "music_wav": "F:\\Mcode\\mreavideo\\outputs\\IMG_3089\\stems\\music.wav", "effects_wav": "F:\\Mcode\\mreavideo\\outputs\\IMG_3089\\stems\\effects.wav", "subtitles_srt": "F:\\Mcode\\mreavideo\\outputs\\IMG_3089\\packaging\\subtitles.srt", "overlays_ass": "F:\\Mcode\\mreavideo\\outputs\\IMG_3089\\packaging\\overlays.ass", "packaging_timeline_json": "F:\\Mcode\\mreavideo\\outputs\\IMG_3089\\packaging\\timeline.json"}, "shots": [{"shot_index": 1, "id": "shot_001", "t0": 0.0, "t1": 7.833, "duration_s": 7.833, "remotion_30fps": {"from": 0, "durationInFrames": 235}, "verdict": "AI-generated video", "scene_style": "ai_video", "transition_in": "start", "background_hex": "#061014", "palette_hex": ["#061014"], "motion_events_count": 0, "sequences": [], "first_frame": "shots/shot_001_first.jpg", "last_frame": "shots/shot_001_last.jpg", "elements_sheet": "shots/shot_001_elements.jpg", "escbase_pattern_suggestion": "Canonical Hero Template (Slide 1 Fixed Copy Rule)"}], "sfx_catalog": [], "output_posix": "F:/Mcode/mreavideo/outputs/IMG_3089", "report_url": "file:///F:/Mcode/mreavideo/outputs/IMG_3089/report.html", "blueprint_url": "file:///F:/Mcode/mreavideo/outputs/IMG_3089/HANDOFF_BLUEPRINT.md", "videomd_url": "file:///F:/Mcode/mreavideo/outputs/IMG_3089/VIDEO.md", "remake_url": "file:///F:/Mcode/mreavideo/outputs/IMG_3089/video/remake.md", "storyboard_url": "file:///F:/Mcode/mreavideo/outputs/IMG_3089/storyboard.jpg"}, {"schema": "mreavideo.handoff.v1", "video_name": "r1", "output_dir": "F:\\Mcode\\mreavideo\\outputs\\r1", "source": {"filename": "r1.mp4", "resolution": "540x960", "aspect_ratio": "9:16", "fps": 30.0, "duration_s": 60.0}, "reelcrew_catalog_match": {"style": {"style_id": 1, "title": "Bản tin công nghệ trên sân khấu teal liền mạch", "category": "Nội dung thành video diễn giải", "skill": "animated-explainer · tech-brief", "description": "Kể một tin công nghệ trong 45–90 s: từng ý hiện nối tiếp trên một sân khấu teal, có ảnh chụp màn hình thật.", "videos": ["https://reelcrew.io/site/tech-brief-6021ac5d.mp4", "https://reelcrew.io/site/tech-brief-22c0c2d2.mp4", "https://reelcrew.io/site/tech-brief-fdd03fd9.mp4"], "local_videos": [{"url": "https://reelcrew.io/site/tech-brief-6021ac5d.mp4", "filename": "tech-brief-6021ac5d.mp4", "local_path": "F:\\mworkk\\videosample\\reels\\tech-brief-6021ac5d.mp4", "size_bytes": 1101277, "ok": true}, {"url": "https://reelcrew.io/site/tech-brief-22c0c2d2.mp4", "filename": "tech-brief-22c0c2d2.mp4", "local_path": "F:\\mworkk\\videosample\\reels\\tech-brief-22c0c2d2.mp4", "size_bytes": 1155004, "ok": true}, {"url": "https://reelcrew.io/site/tech-brief-fdd03fd9.mp4", "filename": "tech-brief-fdd03fd9.mp4", "local_path": "F:\\mworkk\\videosample\\reels\\tech-brief-fdd03fd9.mp4", "size_bytes": 1201215, "ok": true}]}, "matched_by": "sha256", "video": {"url": "https://reelcrew.io/site/tech-brief-6021ac5d.mp4", "filename": "tech-brief-6021ac5d.mp4", "local_path": "F:\\mworkk\\videosample\\reels\\tech-brief-6021ac5d.mp4", "size_bytes": 1101277, "ok": true}}, "production_verdict": "code / template render 100%; audio: voice + music 191.4BPM (to confirm, leaning stock library music) + 64 sound effects; packaging: 88 subtitle lines, 36 sound effects land on text / sticker pops", "confidence": 0.848, "global_palette_hex": ["#061014", "#142123", "#213732", "#43574b", "#66827e", "#0f1d1e", "#152b2a", "#293e38", "#4c636c", "#040e12"], "audio_summary": {"tempo_bpm": 191.4, "rms_dbfs": -16.2, "total_sfx_hits": 64, "distinct_sfx_groups": 19, "clean_reusable_sfx_count": 19}, "packaging_summary": {"subtitle_cues_count": 143, "sfx_anchored_to_text": [{"t": 14.965, "type": "impact", "dur": 1.509, "centroid_hz": 220, "hf_ratio": 0.005, "strength": 2.3, "source": "deterministic_anchored", "confidence": "medium", "anchor": "text label \"gi model ln\" appears"}, {"t": 21.107, "type": "pop", "dur": 1.509, "centroid_hz": 1077, "hf_ratio": 0.057, "strength": 3.4, "source": "deterministic_anchored", "confidence": "medium", "anchor": "styled text \"T hun luyn\" appears"}, {"t": 24.857, "type": "pop", "dur": 1.509, "centroid_hz": 1625, "hf_ratio": 0.056, "strength": 1.9, "source": "deterministic_anchored", "confidence": "medium", "anchor": "text label \"Nguồn: video 200\" appears"}, {"t": 26.529, "type": "pop", "dur": 0.871, "centroid_hz": 1365, "hf_ratio": 0.033, "strength": 4.0, "source": "deterministic_anchored", "confidence": "medium", "anchor": "text label \"13%\" appears"}, {"t": 49.969, "type": "impact", "dur": 1.509, "centroid_hz": 290, "hf_ratio": 0.006, "strength": 1.6, "source": "deterministic_anchored", "confidence": "medium", "anchor": "text label \"Jev\" appears"}, {"t": 56.459, "type": "pop", "dur": 1.509, "centroid_hz": 573, "hf_ratio": 0.023, "strength": 1.8, "source": "deterministic_anchored", "confidence": "medium", "anchor": "text label \"Bool\" appears"}, {"t": 58.456, "type": "ding", "dur": 0.104, "centroid_hz": 1903, "hf_ratio": 0.166, "strength": 2.2, "source": "deterministic_anchored", "confidence": "medium", "anchor": "text label \"tc đ · chi phí ·\" appears"}]}, "artifacts": {"vocals_wav": "F:\\Mcode\\mreavideo\\outputs\\r1\\stems\\vocals.wav", "music_wav": "F:\\Mcode\\mreavideo\\outputs\\r1\\stems\\music.wav", "effects_wav": "F:\\Mcode\\mreavideo\\outputs\\r1\\stems\\effects.wav", "subtitles_srt": "F:\\Mcode\\mreavideo\\outputs\\r1\\packaging\\subtitles.srt", "overlays_ass": "F:\\Mcode\\mreavideo\\outputs\\r1\\packaging\\overlays.ass", "packaging_timeline_json": "F:\\Mcode\\mreavideo\\outputs\\r1\\packaging\\timeline.json"}, "shots": [{"shot_index": 1, "id": "shot_001", "t0": 0.0, "t1": 15.1, "duration_s": 15.1, "remotion_30fps": {"from": 0, "durationInFrames": 453}, "verdict": "code / template render", "scene_style": "gradient", "transition_in": "start", "background_hex": "#061014", "palette_hex": ["#061014", "#142123", "#213732", "#43574b", "#66827e"], "motion_events_count": 11, "sequences": [{"n": 3, "events": [6, 7, 8], "t0": 9.87, "interval": 1.53, "each": 0.27}], "first_frame": "shots/shot_001_first.jpg", "last_frame": "shots/shot_001_last.jpg", "elements_sheet": "shots/shot_001_elements.jpg", "escbase_pattern_suggestion": "Canonical Hero Template (Slide 1 Fixed Copy Rule)"}, {"shot_index": 2, "id": "shot_002", "t0": 15.1, "t1": 38.233, "duration_s": 23.133, "remotion_30fps": {"from": 453, "durationInFrames": 694}, "verdict": "code / template render", "scene_style": "type", "transition_in": "slide", "background_hex": "#061014", "palette_hex": ["#061014", "#0f1d1e", "#152b2a", "#293e38", "#4c636c"], "motion_events_count": 11, "sequences": [], "first_frame": "shots/shot_002_first.jpg", "last_frame": "shots/shot_002_last.jpg", "elements_sheet": "shots/shot_002_elements.jpg", "escbase_pattern_suggestion": "visual-gallery:workflow-grid / visual-gallery:risk-cards"}, {"shot_index": 3, "id": "shot_003", "t0": 38.233, "t1": 44.467, "duration_s": 6.234, "remotion_30fps": {"from": 1147, "durationInFrames": 187}, "verdict": "code / template render", "scene_style": "particles", "transition_in": "blur", "background_hex": "#040e12", "palette_hex": ["#040e12", "#0b1618", "#132021", "#1b2f2e", "#2e4650"], "motion_events_count": 7, "sequences": [], "first_frame": "shots/shot_003_first.jpg", "last_frame": "shots/shot_003_last.jpg", "elements_sheet": "shots/shot_003_elements.jpg", "escbase_pattern_suggestion": "visual-gallery:flow-diagram / visual-gallery:data-stream"}, {"shot_index": 4, "id": "shot_004", "t0": 44.467, "t1": 58.233, "duration_s": 13.766, "remotion_30fps": {"from": 1334, "durationInFrames": 413}, "verdict": "code / template render", "scene_style": "data", "transition_in": "wipe", "background_hex": "#061014", "palette_hex": ["#061014", "#132022", "#1d312f", "#2c443d", "#516861"], "motion_events_count": 7, "sequences": [{"n": 3, "events": [2, 3, 4], "t0": 51.53, "interval": 2.47, "each": 0.26}], "first_frame": "shots/shot_004_first.jpg", "last_frame": "shots/shot_004_last.jpg", "elements_sheet": "shots/shot_004_elements.jpg", "escbase_pattern_suggestion": "visual-gallery:performance-bars / visual-gallery:speed-gauge"}, {"shot_index": 5, "id": "shot_005", "t0": 58.233, "t1": 60.0, "duration_s": 1.767, "remotion_30fps": {"from": 1747, "durationInFrames": 53}, "verdict": "code / template render", "scene_style": "data", "transition_in": "slide", "background_hex": "#061014", "palette_hex": ["#061014", "#121f21", "#182f2c", "#253d36", "#3f514d"], "motion_events_count": 3, "sequences": [], "first_frame": "shots/shot_005_first.jpg", "last_frame": "shots/shot_005_last.jpg", "elements_sheet": "shots/shot_005_elements.jpg", "escbase_pattern_suggestion": "visual-gallery:performance-bars / visual-gallery:speed-gauge"}], "sfx_catalog": [{"group": "F1", "file_rel": "sfx/sfx_01.wav", "file_abs": "F:\\Mcode\\mreavideo\\outputs\\r1\\sfx\\sfx_01.wav", "exists": true, "type": "ding", "count": 9, "snr_db": 59.0, "clean_for_reuse": true, "primary_trigger": "subtitle_in", "timestamps_s": [0.18, 5.08, 7.58, 24.46, 31.32, 38.2, 44.46, 50.08, 58.21]}, {"group": "F2", "file_rel": "sfx/sfx_02.wav", "file_abs": "F:\\Mcode\\mreavideo\\outputs\\r1\\sfx\\sfx_02.wav", "exists": true, "type": "click", "count": 4, "snr_db": 44.9, "clean_for_reuse": true, "primary_trigger": "ambient", "timestamps_s": [7.18, 12.81, 30.31, 46.56]}, {"group": "F3", "file_rel": "sfx/sfx_03.wav", "file_abs": "F:\\Mcode\\mreavideo\\outputs\\r1\\sfx\\sfx_03.wav", "exists": true, "type": "click", "count": 11, "snr_db": 34.6, "clean_for_reuse": true, "primary_trigger": "ambient", "timestamps_s": [8.44, 10.31, 13.43, 25.31, 26.56, 29.68, 36.56, 43.43, 45.94, 47.19, 56.56]}, {"group": "F4", "file_rel": "sfx/sfx_04.wav", "file_abs": "F:\\Mcode\\mreavideo\\outputs\\r1\\sfx\\sfx_04.wav", "exists": true, "type": "click", "count": 16, "snr_db": 42.9, "clean_for_reuse": true, "primary_trigger": "subtitle_in", "timestamps_s": [9.06, 17.18, 17.81, 20.31, 23.43, 24.05, 30.93, 34.68, 35.93, 37.81, 41.55, 47.81]}, {"group": "F5", "file_rel": "sfx/sfx_05.wav", "file_abs": "F:\\Mcode\\mreavideo\\outputs\\r1\\sfx\\sfx_05.wav", "exists": true, "type": "click", "count": 3, "snr_db": 47.3, "clean_for_reuse": true, "primary_trigger": "subtitle_in", "timestamps_s": [9.68, 10.93, 29.06]}, {"group": "F6", "file_rel": "sfx/sfx_06.wav", "file_abs": "F:\\Mcode\\mreavideo\\outputs\\r1\\sfx\\sfx_06.wav", "exists": true, "type": "click", "count": 1, "snr_db": 43.3, "clean_for_reuse": true, "primary_trigger": "ambient", "timestamps_s": [11.56]}, {"group": "F7", "file_rel": "sfx/sfx_07.wav", "file_abs": "F:\\Mcode\\mreavideo\\outputs\\r1\\sfx\\sfx_07.wav", "exists": true, "type": "ding", "count": 1, "snr_db": 60.0, "clean_for_reuse": true, "primary_trigger": "ambient", "timestamps_s": [14.67]}, {"group": "F8", "file_rel": "sfx/sfx_08.wav", "file_abs": "F:\\Mcode\\mreavideo\\outputs\\r1\\sfx\\sfx_08.wav", "exists": true, "type": "whoosh", "count": 2, "snr_db": 49.6, "clean_for_reuse": true, "primary_trigger": "subtitle_in", "timestamps_s": [19.06, 25.93]}, {"group": "F9", "file_rel": "sfx/sfx_09.wav", "file_abs": "F:\\Mcode\\mreavideo\\outputs\\r1\\sfx\\sfx_09.wav", "exists": true, "type": "other", "count": 1, "snr_db": 37.5, "clean_for_reuse": true, "primary_trigger": "ambient", "timestamps_s": [19.68]}, {"group": "F10", "file_rel": "sfx/sfx_10.wav", "file_abs": "F:\\Mcode\\mreavideo\\outputs\\r1\\sfx\\sfx_10.wav", "exists": true, "type": "ding", "count": 1, "snr_db": 60.5, "clean_for_reuse": true, "primary_trigger": "ambient", "timestamps_s": [20.86]}, {"group": "F11", "file_rel": "sfx/sfx_11.wav", "file_abs": "F:\\Mcode\\mreavideo\\outputs\\r1\\sfx\\sfx_11.wav", "exists": true, "type": "click", "count": 6, "snr_db": 41.5, "clean_for_reuse": true, "primary_trigger": "subtitle_in", "timestamps_s": [21.56, 22.18, 28.43, 48.43, 49.06, 55.31]}, {"group": "F12", "file_rel": "sfx/sfx_12.wav", "file_abs": "F:\\Mcode\\mreavideo\\outputs\\r1\\sfx\\sfx_12.wav", "exists": true, "type": "click", "count": 1, "snr_db": 31.6, "clean_for_reuse": true, "primary_trigger": "subtitle_in", "timestamps_s": [22.81]}, {"group": "F13", "file_rel": "sfx/sfx_13.wav", "file_abs": "F:\\Mcode\\mreavideo\\outputs\\r1\\sfx\\sfx_13.wav", "exists": true, "type": "whoosh", "count": 1, "snr_db": 46.7, "clean_for_reuse": true, "primary_trigger": "ambient", "timestamps_s": [27.81]}, {"group": "F14", "file_rel": "sfx/sfx_14.wav", "file_abs": "F:\\Mcode\\mreavideo\\outputs\\r1\\sfx\\sfx_14.wav", "exists": true, "type": "pop", "count": 2, "snr_db": 63.5, "clean_for_reuse": true, "primary_trigger": "ambient", "timestamps_s": [39.04, 40.49]}, {"group": "F15", "file_rel": "sfx/sfx_15.wav", "file_abs": "F:\\Mcode\\mreavideo\\outputs\\r1\\sfx\\sfx_15.wav", "exists": true, "type": "click", "count": 1, "snr_db": 32.0, "clean_for_reuse": true, "primary_trigger": "subtitle_in", "timestamps_s": [39.68]}, {"group": "F16", "file_rel": "sfx/sfx_16.wav", "file_abs": "F:\\Mcode\\mreavideo\\outputs\\r1\\sfx\\sfx_16.wav", "exists": true, "type": "other", "count": 1, "snr_db": 32.7, "clean_for_reuse": true, "primary_trigger": "ambient", "timestamps_s": [40.94]}, {"group": "F17", "file_rel": "sfx/sfx_17.wav", "file_abs": "F:\\Mcode\\mreavideo\\outputs\\r1\\sfx\\sfx_17.wav", "exists": true, "type": "pop", "count": 1, "snr_db": 45.8, "clean_for_reuse": true, "primary_trigger": "ambient", "timestamps_s": [44.05]}, {"group": "F18", "file_rel": "sfx/sfx_18.wav", "file_abs": "F:\\Mcode\\mreavideo\\outputs\\r1\\sfx\\sfx_18.wav", "exists": true, "type": "click", "count": 1, "snr_db": 32.3, "clean_for_reuse": true, "primary_trigger": "subtitle_in", "timestamps_s": [53.82]}, {"group": "F19", "file_rel": "sfx/sfx_19.wav", "file_abs": "F:\\Mcode\\mreavideo\\outputs\\r1\\sfx\\sfx_19.wav", "exists": true, "type": "click", "count": 1, "snr_db": 35.1, "clean_for_reuse": true, "primary_trigger": "ambient", "timestamps_s": [54.69]}], "output_posix": "F:/Mcode/mreavideo/outputs/r1", "report_url": "file:///F:/Mcode/mreavideo/outputs/r1/report.html", "blueprint_url": "file:///F:/Mcode/mreavideo/outputs/r1/HANDOFF_BLUEPRINT.md", "videomd_url": "file:///F:/Mcode/mreavideo/outputs/r1/VIDEO.md", "remake_url": "file:///F:/Mcode/mreavideo/outputs/r1/video/remake.md", "storyboard_url": "file:///F:/Mcode/mreavideo/outputs/r1/storyboard.jpg"}, {"schema": "mreavideo.handoff.v1", "video_name": "sample_test", "output_dir": "F:\\Mcode\\mreavideo\\outputs\\sample_test", "source": {"filename": "sample_test.mp4", "resolution": "640x360", "aspect_ratio": "16:9", "fps": 30.0, "duration_s": 4.0}, "reelcrew_catalog_match": null, "production_verdict": "混合制作：代码/模板渲染 50% + 屏幕录制/截图 50%；用到真实素材：界面截图（2.0s）；声音：BGM 无明显节拍（待确认，倾向现成曲库配乐）", "confidence": 0.601, "global_palette_hex": ["#160af8", "#30eff1", "#ef22fb", "#040807", "#02f91a", "#96c7c6", "#000204", "#b713ba", "#0abb1a", "#0004bc"], "audio_summary": {"tempo_bpm": null, "rms_dbfs": -21.2, "total_sfx_hits": 0, "distinct_sfx_groups": 0, "clean_reusable_sfx_count": 0}, "packaging_summary": {"subtitle_cues_count": 7, "sfx_anchored_to_text": []}, "artifacts": {"vocals_wav": "F:\\Mcode\\mreavideo\\outputs\\sample_test\\stems\\vocals.wav", "music_wav": "F:\\Mcode\\mreavideo\\outputs\\sample_test\\stems\\music.wav", "effects_wav": "F:\\Mcode\\mreavideo\\outputs\\sample_test\\stems\\effects.wav", "subtitles_srt": "F:\\Mcode\\mreavideo\\outputs\\sample_test\\packaging\\subtitles.srt", "overlays_ass": "F:\\Mcode\\mreavideo\\outputs\\sample_test\\packaging\\overlays.ass", "packaging_timeline_json": "F:\\Mcode\\mreavideo\\outputs\\sample_test\\packaging\\timeline.json"}, "shots": [{"shot_index": 1, "id": "shot_001", "t0": 0.0, "t1": 2.0, "duration_s": 2.0, "remotion_30fps": {"from": 0, "durationInFrames": 60}, "verdict": "代码/模板渲染", "scene_style": "gradient", "transition_in": "start", "background_hex": "#040807", "palette_hex": ["#160af8", "#30eff1", "#ef22fb", "#040807", "#02f91a"], "motion_events_count": 2, "sequences": [], "first_frame": "shots/shot_001_first.jpg", "last_frame": "shots/shot_001_last.jpg", "elements_sheet": "shots/shot_001_elements.jpg", "escbase_pattern_suggestion": "Canonical Hero Template (Slide 1 Fixed Copy Rule)"}, {"shot_index": 2, "id": "shot_002", "t0": 2.0, "t1": 4.0, "duration_s": 2.0, "remotion_30fps": {"from": 60, "durationInFrames": 60}, "verdict": "屏幕录制/截图；引入真实素材（界面截图）", "scene_style": "gradient", "transition_in": "cut", "background_hex": "#96c7c6", "palette_hex": ["#96c7c6", "#000204", "#b713ba", "#0abb1a", "#0004bc"], "motion_events_count": 0, "sequences": [], "first_frame": "shots/shot_002_first.jpg", "last_frame": "shots/shot_002_last.jpg", "elements_sheet": "shots/shot_002_elements.jpg", "escbase_pattern_suggestion": "visual-gallery:product-logo-hero / visual-gallery:highlight-mode"}], "sfx_catalog": [], "output_posix": "F:/Mcode/mreavideo/outputs/sample_test", "report_url": "file:///F:/Mcode/mreavideo/outputs/sample_test/report.html", "blueprint_url": "file:///F:/Mcode/mreavideo/outputs/sample_test/HANDOFF_BLUEPRINT.md", "videomd_url": "file:///F:/Mcode/mreavideo/outputs/sample_test/VIDEO.md", "remake_url": "file:///F:/Mcode/mreavideo/outputs/sample_test/video/remake.md", "storyboard_url": "file:///F:/Mcode/mreavideo/outputs/sample_test/storyboard.jpg"}, {"schema": "mreavideo.handoff.v1", "video_name": "x1111", "output_dir": "F:\\Mcode\\mreavideo\\outputs\\x1111", "source": {"filename": "x1111.mp4", "resolution": "720x1280", "aspect_ratio": "9:16", "fps": 30.0, "duration_s": 20.067}, "reelcrew_catalog_match": null, "production_verdict": "Mixed production: AI-generated video 100% (100% of the duration lacks evidence for live action vs AI, to confirm); overlays: subtitles (composited in code / an editor); audio: voice + music 178.2BPM (to confirm, leaning stock library music) + 1 sound effects; packaging: text labels ×5, 1 sound effects land on text / sticker pops", "confidence": 0.7, "global_palette_hex": ["#061014"], "audio_summary": {"tempo_bpm": 178.2, "rms_dbfs": -19.8, "total_sfx_hits": 17, "distinct_sfx_groups": 15, "clean_reusable_sfx_count": 0}, "packaging_summary": {"subtitle_cues_count": 5, "sfx_anchored_to_text": [{"t": 9.416, "type": "ding", "dur": 1.103, "centroid_hz": 1377, "hf_ratio": 0.087, "strength": 6.9, "source": "deterministic_anchored", "confidence": "medium", "anchor": "text label \"福\" appears"}]}, "artifacts": {"vocals_wav": "F:\\Mcode\\mreavideo\\outputs\\x1111\\stems\\vocals.wav", "music_wav": "F:\\Mcode\\mreavideo\\outputs\\x1111\\stems\\music.wav", "effects_wav": "F:\\Mcode\\mreavideo\\outputs\\x1111\\stems\\effects.wav", "subtitles_srt": "F:\\Mcode\\mreavideo\\outputs\\x1111\\packaging\\subtitles.srt", "overlays_ass": "F:\\Mcode\\mreavideo\\outputs\\x1111\\packaging\\overlays.ass", "packaging_timeline_json": "F:\\Mcode\\mreavideo\\outputs\\x1111\\packaging\\timeline.json"}, "shots": [{"shot_index": 1, "id": "shot_001", "t0": 0.0, "t1": 20.067, "duration_s": 20.067, "remotion_30fps": {"from": 0, "durationInFrames": 602}, "verdict": "AI-generated video + code / editor overlays (subtitles)", "scene_style": "ai_video", "transition_in": "start", "background_hex": "#061014", "palette_hex": ["#061014"], "motion_events_count": 0, "sequences": [], "first_frame": "shots/shot_001_first.jpg", "last_frame": "shots/shot_001_last.jpg", "elements_sheet": "shots/shot_001_elements.jpg", "escbase_pattern_suggestion": "Canonical Hero Template (Slide 1 Fixed Copy Rule)"}], "sfx_catalog": [{"group": "F1", "file_rel": "sfx/sfx_01.wav", "file_abs": "F:\\Mcode\\mreavideo\\outputs\\x1111\\sfx\\sfx_01.wav", "exists": true, "type": "click", "count": 1, "snr_db": 9.8, "clean_for_reuse": false, "primary_trigger": "ambient", "timestamps_s": [0.21]}, {"group": "F2", "file_rel": "sfx/sfx_02.wav", "file_abs": null, "exists": false, "type": "pop", "count": 2, "snr_db": 31.6, "clean_for_reuse": false, "primary_trigger": "ambient", "timestamps_s": [0.91, 13.31]}, {"group": "F3", "file_rel": "sfx/sfx_03.wav", "file_abs": null, "exists": false, "type": "pop", "count": 1, "snr_db": 17.7, "clean_for_reuse": false, "primary_trigger": "ambient", "timestamps_s": [3.55]}, {"group": "F4", "file_rel": "sfx/sfx_04.wav", "file_abs": null, "exists": false, "type": "ding", "count": 1, "snr_db": 24.3, "clean_for_reuse": false, "primary_trigger": "ambient", "timestamps_s": [3.99]}, {"group": "F5", "file_rel": "sfx/sfx_05.wav", "file_abs": null, "exists": false, "type": "ding", "count": 1, "snr_db": 34.7, "clean_for_reuse": false, "primary_trigger": "ambient", "timestamps_s": [5.08]}, {"group": "F6", "file_rel": "sfx/sfx_06.wav", "file_abs": null, "exists": false, "type": "click", "count": 1, "snr_db": 12.3, "clean_for_reuse": false, "primary_trigger": "ambient", "timestamps_s": [6.16]}, {"group": "F7", "file_rel": "sfx/sfx_07.wav", "file_abs": null, "exists": false, "type": "pop", "count": 2, "snr_db": 21.7, "clean_for_reuse": false, "primary_trigger": "ambient", "timestamps_s": [6.57, 7.22]}, {"group": "F8", "file_rel": "sfx/sfx_08.wav", "file_abs": null, "exists": false, "type": "click", "count": 1, "snr_db": 20.5, "clean_for_reuse": false, "primary_trigger": "ambient", "timestamps_s": [7.72]}, {"group": "F9", "file_rel": "sfx/sfx_09.wav", "file_abs": null, "exists": false, "type": "click", "count": 1, "snr_db": 21.8, "clean_for_reuse": false, "primary_trigger": "ambient", "timestamps_s": [8.1]}, {"group": "F10", "file_rel": "sfx/sfx_10.wav", "file_abs": null, "exists": false, "type": "pop", "count": 1, "snr_db": 20.2, "clean_for_reuse": false, "primary_trigger": "ambient", "timestamps_s": [12.08]}, {"group": "F11", "file_rel": "sfx/sfx_11.wav", "file_abs": null, "exists": false, "type": "click", "count": 1, "snr_db": 20.8, "clean_for_reuse": false, "primary_trigger": "label_in", "timestamps_s": [12.59]}, {"group": "F12", "file_rel": "sfx/sfx_12.wav", "file_abs": null, "exists": false, "type": "click", "count": 1, "snr_db": 12.5, "clean_for_reuse": false, "primary_trigger": "ambient", "timestamps_s": [14.2]}, {"group": "F13", "file_rel": "sfx/sfx_13.wav", "file_abs": null, "exists": false, "type": "ding", "count": 1, "snr_db": 41.5, "clean_for_reuse": false, "primary_trigger": "ambient", "timestamps_s": [14.82]}, {"group": "F14", "file_rel": "sfx/sfx_14.wav", "file_abs": null, "exists": false, "type": "ding", "count": 1, "snr_db": 32.8, "clean_for_reuse": false, "primary_trigger": "ambient", "timestamps_s": [15.81]}, {"group": "F15", "file_rel": "sfx/sfx_15.wav", "file_abs": null, "exists": false, "type": "ding", "count": 1, "snr_db": 43.0, "clean_for_reuse": false, "primary_trigger": "ambient", "timestamps_s": [18.46]}], "output_posix": "F:/Mcode/mreavideo/outputs/x1111", "report_url": "file:///F:/Mcode/mreavideo/outputs/x1111/report.html", "blueprint_url": "file:///F:/Mcode/mreavideo/outputs/x1111/HANDOFF_BLUEPRINT.md", "videomd_url": "file:///F:/Mcode/mreavideo/outputs/x1111/VIDEO.md", "remake_url": "file:///F:/Mcode/mreavideo/outputs/x1111/video/remake.md", "storyboard_url": "file:///F:/Mcode/mreavideo/outputs/x1111/storyboard.jpg"}]};
+    let activeFactoryFilter = 'ALL';
+
+    function showToast(msg) {
+      const t = document.getElementById('toast');
+      t.innerText = msg;
+      t.style.display = 'block';
+      clearTimeout(window.__toastTimer);
+      window.__toastTimer = setTimeout(() => { t.style.display = 'none'; }, 2400);
+    }
+
+    function copyText(txt) {
+      navigator.clipboard.writeText(txt).then(() => {
+        showToast('✅ Đã copy lệnh vào Clipboard!');
+      });
+    }
+
+    function playAudioUrl(url, label) {
+      const player = document.getElementById('global-audio-player');
+      player.src = url;
+      player.play();
+      showToast('🔊 Đang phát: ' + label);
+    }
+
+    function switchTab(tabId, btnEl) {
+      document.querySelectorAll('.tab-pane').forEach(p => p.classList.remove('active'));
+      document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+      document.getElementById(tabId).classList.add('active');
+      if (btnEl) btnEl.classList.add('active');
+    }
+
+    function jumpToSkill(skillRoot) {
+      const btns = document.querySelectorAll('.tab-btn');
+      switchTab('tab-templates', btns[1]);
+      document.getElementById('skill-select').value = skillRoot;
+      renderTemplates();
+    }
+
+    function setFactoryFilter(fac, btnEl) {
+      activeFactoryFilter = fac;
+      document.querySelectorAll('.pill-btn').forEach(b => b.classList.remove('active'));
+      if (btnEl) btnEl.classList.add('active');
+      renderTemplates();
+    }
+
+    function switchCardVideo(styleId, vidIdx, btnEl) {
+      const st = COCKPIT_DATA.styles.find(s => s.style_id === styleId);
+      if (!st || !st.videos[vidIdx]) return;
+      const v = st.videos[vidIdx];
+      const videoEl = document.getElementById('vid-player-' + styleId);
+      const fnameEl = document.getElementById('vid-fname-' + styleId);
+      if (videoEl) {
+        videoEl.src = v.file_url;
+        videoEl.dataset.localPath = v.local_path;
+        videoEl.play();
+      }
+      if (fnameEl) {
+        fnameEl.innerText = v.filename + ' (' + v.size_mb + ' MB)';
+      }
+      const parent = btnEl.parentElement;
+      parent.querySelectorAll('.vid-tab-btn').forEach(b => b.classList.remove('active'));
+      btnEl.classList.add('active');
+    }
+
+    function copyDecomposeCmd(styleId) {
+      const videoEl = document.getElementById('vid-player-' + styleId);
+      const localPath = videoEl ? videoEl.dataset.localPath : '';
+      const cmd = `${COCKPIT_DATA.workspace_root}\\.venv\\Scripts\\python.exe ${COCKPIT_DATA.workspace_root}\\run.py "${localPath}"`;
+      copyText(cmd);
+    }
+
+    function copyFactoryPrompt(styleId) {
+      const st = COCKPIT_DATA.styles.find(s => s.style_id === styleId);
+      const videoEl = document.getElementById('vid-player-' + styleId);
+      const localPath = videoEl ? videoEl.dataset.localPath : (st.videos[0] ? st.videos[0].local_path : '');
+      const stem = localPath.split('\\').pop().replace(/\.mp4$/i, '');
+      const analyzedStem = (st.analyzed_outputs && st.analyzed_outputs.length > 0) ? st.analyzed_outputs[0] : stem;
+      const outDir = `${COCKPIT_DATA.workspace_root}\\outputs\\${analyzedStem}`;
+
+      let prompt = '';
+      if (st.analyzed_outputs && st.analyzed_outputs.length > 0) {
+        prompt = `[Style #${st.style_id}: ${st.title} (${st.skill})]\nĐọc file Handoff Blueprint đã giải phẫu tại ${outDir}\\HANDOFF_BLUEPRINT.md và ${outDir}\\video\\remake.md.\nHãy áp dụng bảng màu Hex, cấu trúc phân cảnh và kho SFX sạch tại ${outDir}\\sfx để triển khai template này trong xưởng (${st.factory.name}) đảm bảo pass 100% kiểm định cơ học.`;
+      } else {
+        prompt = `[Style #${st.style_id}: ${st.title} (${st.skill})]\nBước 1: Chạy lệnh giải phẫu video mẫu bằng skill /vrea-video-forensics:\n${COCKPIT_DATA.workspace_root}\\.venv\\Scripts\\python.exe ${COCKPIT_DATA.workspace_root}\\run.py "${localPath}"\nBước 2: Đọc file ${outDir}\\HANDOFF_BLUEPRINT.md và ${outDir}\\video\\remake.md để tích hợp style "${st.title}" vào xưởng (${st.factory.name}) đảm bảo pass 100% kiểm định cơ học.`;
+      }
+      copyText(prompt);
+    }
+
+    function renderKpisAndMatrix() {
+      const kpiBox = document.getElementById('kpi-container');
+      kpiBox.innerHTML = `
+        <div class="kpi"><div class="v">${COCKPIT_DATA.total_styles}</div><div class="l">Video Templates</div></div>
+        <div class="kpi"><div class="v">${COCKPIT_DATA.total_videos}</div><div class="l">Local MP4 Samples</div></div>
+        <div class="kpi"><div class="v">14</div><div class="l">Skill Families</div></div>
+        <div class="kpi"><div class="v">${COCKPIT_DATA.total_analyzed}</div><div class="l">Đã Giải Phẫu</div></div>
+      `;
+
+      // Populate filters
+      const cats = Array.from(new Set(COCKPIT_DATA.styles.map(s => s.category))).filter(Boolean);
+      const catSel = document.getElementById('category-select');
+      cats.forEach(c => {
+        const opt = document.createElement('option');
+        opt.value = c;
+        opt.innerText = c;
+        catSel.appendChild(opt);
+      });
+
+      const skills = Array.from(new Set(COCKPIT_DATA.styles.map(s => s.skill_root))).filter(Boolean);
+      const skSel = document.getElementById('skill-select');
+      skills.forEach(sk => {
+        const count = COCKPIT_DATA.styles.filter(s => s.skill_root === sk).length;
+        const opt = document.createElement('option');
+        opt.value = sk;
+        opt.innerText = `${sk} (${count} templates)`;
+        skSel.appendChild(opt);
+      });
+
+      // Render skill matrix table in Tab 1
+      let rows = skills.map(sk => {
+        const list = COCKPIT_DATA.styles.filter(s => s.skill_root === sk);
+        const vidsCount = list.reduce((acc, x) => acc + x.videos.length, 0);
+        const fac = list[0].factory;
+        const looks = list.map(x => {
+          const lk = x.skill.includes('·') ? x.skill.split('·')[1].trim() : x.skill;
+          const ana = (x.analyzed_outputs && x.analyzed_outputs.length) ? ` ✅(${x.analyzed_outputs.join(',')})` : '';
+          return `<code>#${x.style_id} ${lk}${ana}</code>`;
+        }).join(' · ');
+        return `
+          <tr>
+            <td><strong style="color:var(--accent-cyan); cursor:pointer;" onclick="jumpToSkill('${sk}')">${sk} ↗</strong></td>
+            <td><strong>${list.length}</strong> templates (${vidsCount} videos)</td>
+            <td><span class="badge ${fac.badge_cls}">${fac.name}</span></td>
+            <td style="font-size:12px; color:var(--text-muted);">${fac.also_fits}</td>
+            <td style="line-height:1.7;">${looks}</td>
+          </tr>
+        `;
+      }).join('');
+
+      document.getElementById('skill-matrix-container').innerHTML = `
+        <table class="shot-tbl">
+          <thead>
+            <tr>
+              <th>Bộ Skill (Skill Family)</th>
+              <th>Số Lượng</th>
+              <th>Xưởng Đích Khuyên Dùng</th>
+              <th>Xưởng Phối Hợp</th>
+              <th>Danh Sách Các Kiểu Hình (Looks) — Bấm vào tên Skill để xem Video</th>
+            </tr>
+          </thead>
+          <tbody>${rows}</tbody>
+        </table>
+      `;
+    }
+
+    function renderTemplates() {
+      const q = (document.getElementById('search-input').value || '').toLowerCase().trim();
+      const cat = document.getElementById('category-select').value;
+      const sk = document.getElementById('skill-select').value;
+
+      const filtered = COCKPIT_DATA.styles.filter(st => {
+        if (activeFactoryFilter !== 'ALL' && st.factory.id !== activeFactoryFilter) return false;
+        if (cat !== 'ALL' && st.category !== cat) return false;
+        if (sk !== 'ALL' && st.skill_root !== sk) return false;
+        if (q) {
+          const hay = `${st.style_id} ${st.title} ${st.skill} ${st.category} ${st.description} ${st.videos.map(v => v.filename).join(' ')}`.toLowerCase();
+          if (!hay.includes(q)) return false;
+        }
+        return true;
+      });
+
+      const totalVids = filtered.reduce((acc, s) => acc + s.videos.length, 0);
+      document.getElementById('templates-count').innerText = `Đang hiển thị ${filtered.length}/${COCKPIT_DATA.total_styles} Video Templates (${totalVids} video mẫu local).`;
+
+      const grid = document.getElementById('templates-grid');
+      grid.innerHTML = filtered.map(st => {
+        const v0 = st.videos[0] || { filename: 'N/A', file_url: '', local_path: '', size_mb: 0 };
+        const tabBtns = st.videos.map((v, idx) => `
+          <button class="vid-tab-btn ${idx === 0 ? 'active' : ''}" onclick="switchCardVideo(${st.style_id}, ${idx}, this)">Video ${idx + 1}</button>
+        `).join('');
+
+        const analyzedBadge = (st.analyzed_outputs && st.analyzed_outputs.length > 0)
+          ? `<span class="badge badge-amber" style="cursor:pointer;" onclick="switchTab('tab-analyzed', document.querySelectorAll('.tab-btn')[2])">✅ Đã mổ: ${st.analyzed_outputs.join(', ')}</span>`
+          : '';
+
+        return `
+          <div class="tpl-card">
+            <div class="tpl-top">
+              <span class="tpl-id">STYLE #${String(st.style_id).padStart(2, '0')} · ${st.category}</span>
+              <span class="badge ${st.factory.badge_cls}">${st.factory.name.split(' ')[0]}</span>
+            </div>
+            <div class="tpl-title">${st.title}</div>
+            <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:6px;">
+              <span class="tpl-skill">${st.skill}</span>
+              ${analyzedBadge}
+            </div>
+            <div class="tpl-desc">${st.description}</div>
+
+            <div class="video-box">
+              <video id="vid-player-${st.style_id}" src="${v0.file_url}" data-local-path="${v0.local_path}" controls preload="metadata"></video>
+              <div class="video-tabs">
+                <div style="display:flex; gap:5px; flex-wrap:wrap;">${tabBtns}</div>
+                <span id="vid-fname-${st.style_id}" style="font-size:11px; color:var(--text-muted); font-family:Consolas,monospace;">${v0.filename} (${v0.size_mb} MB)</span>
+              </div>
+            </div>
+
+            <div class="action-row">
+              <button class="act-btn" onclick="copyDecomposeCmd(${st.style_id})">🔬 Copy Lệnh Mổ Video</button>
+              <button class="act-btn primary" onclick="copyFactoryPrompt(${st.style_id})">🚀 Copy Prompt Dựng Template</button>
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    function renderAnalyzedLab() {
+      const box = document.getElementById('analyzed-container');
+      box.innerHTML = COCKPIT_DATA.analyzed.map(item => {
+        const rc = item.reelcrew_catalog_match;
+        const rcBadge = rc && rc.style
+          ? `<span class="badge badge-amber">Khớp SHA256: Style #${rc.style.style_id} — ${rc.style.title} (${rc.style.skill})</span>`
+          : `<span class="badge badge-cyan">Custom Sample Video</span>`;
+
+        const swatches = (item.global_palette_hex || []).map(hex => `
+          <span class="swatch" onclick="copyText('${hex}')" title="Click để copy mã màu ${hex}">
+            <span class="swatch-dot" style="background:${hex};"></span>${hex}
+          </span>
+        `).join('');
+
+        const sfxChips = (item.sfx_catalog || []).map(sfx => {
+          const wavUrl = `file:///${item.output_posix}/${sfx.file_rel}`;
+          return `
+            <button class="sfx-chip" onclick="playAudioUrl('${wavUrl}', '${item.video_name} / ${sfx.group} (${sfx.type} - SNR ${sfx.snr_db}dB)')">
+              🔊 <strong>${sfx.group}</strong> <code>${sfx.type}</code> ×${sfx.count} <span style="color:var(--accent-teal);">(${sfx.snr_db}dB)</span>
+            </button>
+          `;
+        }).join('');
+
+        const shotRows = (item.shots || []).map(sb => {
+          const fUrl = `file:///${item.output_posix}/${sb.first_frame}`;
+          return `
+            <tr>
+              <td><strong>#${String(sb.shot_index).padStart(2, '0')}</strong></td>
+              <td><code>${sb.t0}s – ${sb.t1}s</code> (${sb.duration_s}s)</td>
+              <td><code>from=${sb.remotion_30fps.from}, dur=${sb.remotion_30fps.durationInFrames}</code></td>
+              <td><span class="badge badge-purple">${sb.scene_style}</span> · <code>${sb.transition_in}</code> (${sb.motion_events_count} events)</td>
+              <td><code>${sb.escbase_pattern_suggestion}</code></td>
+              <td><a href="${fUrl}" target="_blank" style="color:var(--accent-teal);">Xem Frame Đầu ↗</a></td>
+            </tr>
+          `;
+        }).join('');
+
+        const musicUrl = `file:///${item.output_posix}/stems/music.wav`;
+        const vocalsUrl = `file:///${item.output_posix}/stems/vocals.wav`;
+        const effectsUrl = `file:///${item.output_posix}/stems/effects.wav`;
+
+        const promptEscbase = `Đọc file Handoff Blueprint tại ${item.output_dir}\\HANDOFF_BLUEPRINT.md và ${item.output_dir}\\video\\remake.md.\nHãy áp dụng bảng màu, nhịp điệu chuyển cảnh và cấu trúc visual của mẫu này để lên visual-plan.md và dựng deck mới trong slide/<ten_project> (tuân thủ nghiêm ngặt WORKFLOW.md, khung 390x693, Slide 1 canonical hero, và kiểm định pass 100% validate_slide.py --semantic-report).`;
+        const promptBackvideo = `Đọc file Handoff Blueprint tại ${item.output_dir}\\HANDOFF_BLUEPRINT.md, ${item.output_dir}\\handoff_manifest.json và ${item.output_dir}\\video\\remake.md.\nSử dụng bảng màu, bố cục các Shot và bộ file âm thanh SFX sạch trong ${item.output_dir}\\sfx để dựng Master Template / Job Remotion mới (tích hợp sẵn AntiReupGuard.tsx, KineticSubtitle.tsx, auto-trigger SFX khi nhảy chữ, và đảm bảo pass 100% test suite).`;
+
+        return `
+          <div class="lab-card">
+            <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px;">
+              <div>
+                <h3 style="font-size:18px; color:#fff;">📁 <code>outputs/${item.video_name}/</code> — ${item.source.resolution} (${item.source.aspect_ratio}) @ ${item.source.fps}fps · ${item.source.duration_s}s</h3>
+                <p style="font-size:13px; color:var(--text-muted); margin-top:3px;"><strong>Verdict:</strong> ${item.production_verdict}</p>
+              </div>
+              <div style="display:flex; gap:8px; flex-wrap:wrap;">
+                ${rcBadge}
+                <a class="act-btn primary" href="${item.report_url}" target="_blank">📊 Mở Visual Report (HTML) ↗</a>
+                <a class="act-btn" href="${item.blueprint_url}" target="_blank">📦 Mở HANDOFF_BLUEPRINT.md ↗</a>
+                <a class="act-btn" href="${item.storyboard_url}" target="_blank">🖼️ Storyboard ↗</a>
+              </div>
+            </div>
+
+            <div>
+              <div style="font-size:12.5px; font-weight:700; color:var(--text-muted); margin-bottom:6px;">🎨 BẢNG MÀU HEX ĐÃ ĐO TỪ VIDEO (Click để copy mã màu):</div>
+              <div class="swatches">${swatches || '<span style="color:var(--text-muted);font-size:12px;">Không có bảng màu</span>'}</div>
+            </div>
+
+            <div>
+              <div style="font-size:12.5px; font-weight:700; color:var(--text-muted); margin-bottom:6px;">🎵 BÓC TÁCH 3 KÊNH ÂM THANH & ${item.audio_summary.clean_reusable_sfx_count} FILE SFX SẠCH (Bấm để nghe thử ngay):</div>
+              <div class="sfx-grid" style="margin-bottom:8px;">
+                <button class="sfx-chip" style="border-color:var(--accent-emerald);" onclick="playAudioUrl('${musicUrl}', '${item.video_name} - Nhạc nền BGM (${item.audio_summary.tempo_bpm || 'N/A'} BPM)')">🎵 Nghe Nhạc Nền Sạch (music.wav · ${item.audio_summary.tempo_bpm || 'N/A'} BPM)</button>
+                <button class="sfx-chip" style="border-color:var(--accent-cyan);" onclick="playAudioUrl('${vocalsUrl}', '${item.video_name} - Giọng đọc tách rời (vocals.wav)')">🗣️ Nghe Giọng Đọc Tách Rời (vocals.wav)</button>
+                <button class="sfx-chip" style="border-color:var(--accent-purple);" onclick="playAudioUrl('${effectsUrl}', '${item.video_name} - Toàn bộ kênh SFX (effects.wav)')">💥 Nghe Kênh SFX Tổng (effects.wav)</button>
+              </div>
+              <div class="sfx-grid">${sfxChips}</div>
+            </div>
+
+            <div>
+              <div style="font-size:12.5px; font-weight:700; color:var(--text-muted); margin-bottom:6px;">🎬 MA TRẬN CHUYỂN ĐỔI PHÂN CẢNH (${item.shots.length} SHOTS):</div>
+              <table class="shot-tbl">
+                <thead>
+                  <tr>
+                    <th>Shot</th>
+                    <th>Thời gian (s)</th>
+                    <th>Remotion (@30fps)</th>
+                    <th>Style & Chuyển Cảnh</th>
+                    <th>Gợi ý Map sang escbase_template (390x693)</th>
+                    <th>Keyframe</th>
+                  </tr>
+                </thead>
+                <tbody>${shotRows}</tbody>
+              </table>
+            </div>
+
+            <div style="display:flex; gap:10px; flex-wrap:wrap;">
+              <button class="act-btn primary" onclick='copyText(${JSON.stringify(promptEscbase)})'>🟢 Copy Lệnh Bàn Giao Sang escbase_template</button>
+              <button class="act-btn primary" onclick='copyText(${JSON.stringify(promptBackvideo)})'>🟣 Copy Lệnh Bàn Giao Sang E:\A1A\backvideo</button>
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    renderKpisAndMatrix();
+    renderTemplates();
+    renderAnalyzedLab();
+  </script>
+</body>
+</html>

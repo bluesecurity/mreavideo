@@ -4,8 +4,10 @@
 - **Tên dự án:** `mreavideo`
 - **Mục đích:** Reverse-Engineer Any Video (Dịch ngược video clip, bóc tách cấu trúc từng phân cảnh, nhận diện AI vs Thực tế, bóc tách âm thanh, nhận dạng phụ đề và lập kế hoạch tái sản xuất Remake Plan).
 - **Thư mục làm việc:** `f:\Mcode\mreavideo`
-- **Rollback Anchor:** `6f4c859d391194b3770da30bb066ca1e36e2fbf9` (Previous anchors: `991532bd7a53fe0d000db59137892107ae3c1778`, `e5e17f3`)
-- **Kho mẫu ReelCrew (61 Styles / 133 Videos):** `F:\mworkk\videosample\reels\` (kèm `CATALOG.md` và `catalog.json`, tải tự động qua `scripts/download_reelcrew_samples.py`)
+- **Rollback Anchor:** `9a80b852b70890e2218ba91471864d1f1d8c8fa9` (Previous anchors: `6f4c859d391194b3770da30bb066ca1e36e2fbf9`, `991532bd7a53fe0d000db59137892107ae3c1778`, `e5e17f3`)
+- **Visual Cockpit & Mindmap Hub:** `F:\Mcode\mreavideo\VISUAL_COCKPIT.html` (sinh tự động qua `scripts/build_cockpit.py` — 4 Tabs: Sơ đồ Mindmap 4 Xưởng, Thư viện 61 Templates / 136 Videos Live Player, Phòng Lab Audio/SFX đã mổ, và Cẩm nang Portable)
+- **Cross-Machine Portable Guard:** `scripts/portable_setup.py` (tự động kiểm tra FFmpeg, vá lỗi RapidOCR Python 3.13 `h < 0.08` cho submodule `engine/`, kiểm tra 216MB ONNX models và đồng bộ đường dẫn Global Skill)
+- **Kho mẫu ReelCrew (61 Styles / 136 Videos):** `F:\mworkk\videosample\reels\` (kèm `CATALOG.md` và `catalog.json`, tải tự động qua `scripts/download_reelcrew_samples.py`)
 - **Handoff Blueprint Compiler:** `scripts/export_handoff.py` (tự động xuất `HANDOFF_BLUEPRINT.md` và `handoff_manifest.json` cho từng video trong `outputs/<stem>/`)
 - **Agent Skill:** `vrea-video-forensics` (Project Scope: `.agents/skills/vrea-video-forensics/` & Global Link duy nhất: `~/.gemini/config/skills/vrea-video-forensics/`)
 

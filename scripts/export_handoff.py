@@ -11,12 +11,28 @@ for zero-collision integration by agents in:
 import argparse
 import hashlib
 import json
+import os
 import sys
 from collections import Counter, defaultdict
 from pathlib import Path
 
 ROOT_DIR = Path(__file__).resolve().parent.parent
-REELS_CATALOG_PATH = Path(r"F:\mworkk\videosample\reels\catalog.json")
+
+
+def resolve_reels_catalog() -> Path:
+    env_dir = os.environ.get("REELS_VAULT_DIR")
+    if env_dir:
+        p = Path(env_dir) / "catalog.json"
+        if p.exists():
+            return p
+    default_p = Path(r"F:\mworkk\videosample\reels\catalog.json")
+    if default_p.exists():
+        return default_p
+    rel_p = ROOT_DIR.parent / "videosample" / "reels" / "catalog.json"
+    return rel_p
+
+
+REELS_CATALOG_PATH = resolve_reels_catalog()
 
 # Map rea-video scene styles to escbase_template visual-pattern-gallery references
 ESCBASE_PATTERN_MAP = {

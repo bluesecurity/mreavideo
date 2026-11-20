@@ -13,6 +13,9 @@ VENV_PYTHON = ROOT_DIR / ".venv" / ("Scripts" if os.name == "nt" else "bin") / "
 VENV_REA = ROOT_DIR / ".venv" / ("Scripts" if os.name == "nt" else "bin") / ("rea-video.exe" if os.name == "nt" else "rea-video")
 
 def ensure_venv():
+    winget_links = Path.home() / "AppData" / "Local" / "Microsoft" / "WinGet" / "Links"
+    if winget_links.exists() and str(winget_links) not in os.environ.get("PATH", ""):
+        os.environ["PATH"] = str(winget_links) + os.pathsep + os.environ.get("PATH", "")
     if not VENV_REA.exists():
         print(f"[ERROR] Virtualenv executable not found at: {VENV_REA}")
         print("Please ensure .venv is created and rea-video installed.")
@@ -83,10 +86,13 @@ def run_decompose(video_path: Path, output_dir: Path | None = None, vlm: bool = 
             print(f"📝 Remake Spec:   file:///{video_md.as_posix()}")
         try:
             from scripts.export_handoff import compile_handoff
+            from scripts.build_cockpit import build_cockpit
             bp_path, _ = compile_handoff(output_dir)
+            cockpit_path = build_cockpit()
             print(f"📦 Handoff Pack:  file:///{bp_path.as_posix()}")
+            print(f"🧭 Visual Cockpit: file:///{cockpit_path.as_posix()}")
         except Exception as exc:
-            print(f"[WARN] Could not auto-generate Handoff Blueprint: {exc}")
+            print(f"[WARN] Could not auto-generate Handoff Blueprint / Cockpit: {exc}")
     else:
         print(f"\n❌ Pipeline failed with exit code: {result.returncode}")
     return result.returncode
